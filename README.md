@@ -16,12 +16,16 @@ COM2027 - Group 03 - Project
 * **design_doc** - Latex source for the design document.
 * **final_submission** - Where you store your APK files (where relevant)
 * **indi_report** - Invidual report written in Markdown
-* **meetings** - Any information discussed on weekly unsupervised meetings
+* **meetings** - Any information discussed on weekly unsupervised meetings. **This is outside of the requirements and the purpose is solely on keeping any references (URLs, ideas, etc...)**
 * **minutes** - Markdown text files for the minutes of the meeting. Use the minutes_weekxx_group03_template.md file to create new minutes.
 * **reference** - Contains COM2027_Dementia_Ideas.pdf and COM2027_StudentGuide_2016_v2.pdf
 * **resources** - Resource files for the android application (sprites, images, logos)
 * **src** - Java source code
 * **user_acceptance_test** - You will find the installation files of three other groups whose work you will review.
+
+## Requirements
+
+See /reference/requirements.md 
 
 ## Recommmended software
 
