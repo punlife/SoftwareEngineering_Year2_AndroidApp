@@ -9,7 +9,7 @@
 
 ***Members present:***
 - Ryva Collaki
--Akhil Ashok
+- Akhil Ashok
 - Lukasz Drozda
 - Matus Novak
 - Amosh Gurung
