@@ -1,4 +1,4 @@
-#h1Group03 Agenda - Supervised meeting
+#Group03 Agenda - Supervised meeting
 
 **Time and location**
 2017/02/14 - 2:00PM in LTA
