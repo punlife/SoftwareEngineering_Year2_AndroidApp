@@ -12,6 +12,7 @@
 **3)Required items**
 -Set roles within the group
 -Discuss roles and weaknesses of group members
+
 **4)Other items**
 
 **5)Group supervisor business**
