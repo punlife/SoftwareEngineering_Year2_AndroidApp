@@ -4,14 +4,14 @@
 2017/02/14 - 2:00PM in LTA
 
 **1)Reading and approval of minutes from previous meeting**
--Non applicable
+(Non applicable)
 
 **2)Progress report**
--Decide responsibility areas, set targets for the following weeks
+(Decide responsibility areas, set targets for the following weeks)
 
 **3)Required items**
--Set roles within the group
--Discuss roles and weaknesses of group members
+(Set roles within the group, 
+Discuss roles and weaknesses of group members)
 
 **4)Other items**
 
@@ -20,6 +20,6 @@
 **6)Matters arising**
 
 **7)Attachments**
-External lecture reports
-Absences
-Individual contributing reports of all group members.
+(External lecture reports, 
+Absences, 
+Individual contributing reports of all group members)
