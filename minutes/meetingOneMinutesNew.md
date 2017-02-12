@@ -20,7 +20,7 @@
 ==========
 
 1. *(1)* Define the group structure and start to assign group roles **(Tues 14/02)** `RYVA AND AKHIL`
-2. *(1)* Begin to think about/complete the agenda for the project **(Tues 14/02)** `LUKASZ`
+2. *(1)* Complete the agenda for the next meeting **(Tues 14/02)** `LUKASZ`
 3. *(1)* Configure the git repository **(Tues 14/02)** `MATUS`
 4. *(1)* Researching the topic and looking at Nintendo Brain Training games, Luminosity, MindMate and N-Back **(Tues 14/02)** `ALL OF US`
 5. *(1)* Upload minutes before the next meeting **(Tues 14/02)** `RYVA`
