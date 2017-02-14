@@ -10,11 +10,17 @@
 (Decide responsibility areas, set targets for the following weeks)
 
 **3)Required items**
--Set roles within the group 
+
+-Set roles within the group
+
 -Discuss roles and weaknesses of group members
--Git Repository1 
--Research on the topic 
--Brainstorm of Game ideas 
+
+-Git Repository
+
+-Research on the topic
+
+-Brainstorm of Game ideas
+
 -Decision upon amount of games
 
 **4)Other items**
