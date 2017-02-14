@@ -55,10 +55,10 @@ Victor missed our meeting on Friday of last week. He can find the minutes on our
    - Ryva
    
 **Preferences:**
-Victor: No documentation
-Ryva: No designing
-Matus: VERY good at programming
-Amosh: good at designing
+Victor: No documentation | 
+Ryva: No designing | 
+Matus: VERY good at programming | 
+Amosh: good at designing | 
 Akhil: Programming and design
 
 
