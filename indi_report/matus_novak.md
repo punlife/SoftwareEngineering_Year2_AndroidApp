@@ -9,6 +9,8 @@ Invidual weekly contribution - Matus Novak
 
 ## Week 02
 
+Something else
+
 ## Week 03
 
 ## Week 04
