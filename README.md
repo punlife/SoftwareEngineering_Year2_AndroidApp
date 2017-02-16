@@ -45,7 +45,7 @@ See /reference/requirements.md
 | Week No. | Time  | Place |
 |----------|-------|-------|
 | 02       | 14 February (Tuesday) 14:00 | LTA   |
-| 03       |       |       |
+| 03       | 14 February (Tuesday) 14:00      |       |
 | 04       |       |       |
 | 05       |       |       |
 | 06       |       |       |
