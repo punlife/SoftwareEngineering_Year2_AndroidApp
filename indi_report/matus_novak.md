@@ -9,6 +9,8 @@ Invidual weekly contribution - Matus Novak
 
 ## Week 02
 
+Testing something...
+
 ## Week 03
 
 ## Week 04
