@@ -79,7 +79,7 @@
    - Matching card game, like the one in MindMate as a mini-game potentially
 
 
-#### Next Meeting: *Thursday 23rd Februrary 11:00am in University of Surrey Library*
+#### Next Meeting: *Tuesday 21st Februrary 14:00 in University of Surrey LTA - supervised*
 
 
 
