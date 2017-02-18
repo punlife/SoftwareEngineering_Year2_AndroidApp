@@ -54,7 +54,7 @@
    - "A list of main activities, tasks and assignments untertaken and along with a note on the on the progress or the state associated with each of these activities"
    - "A list of your three most important commits/pushes (if any) to the Git repository with git indentifier and commit description/message"
    - Make a note of what was done in the Thursday lecture that week so that it can be included in the final individual report for skills learnt
-   - ***####These must be started this week***
+   - ***###These must be started this week***
 - End of the project report
    - "Individual contribution: What contributions have you made to the group? Put differently, without your contribution, would the project output be similar or slightly worse off than it currently is? And how?"
    - "Self-improvement: What new skill sets have you acquired through this process?"
@@ -79,7 +79,7 @@
    - Matching card game, like the one in MindMate as a mini-game potentially
 
 
-#### Next Meeting: *Thursday 16th Februrary 13:00 in University of Surrey Library*
+#### Next Meeting: *Thursday 23rd Februrary 11:00am in University of Surrey Library*
 
 
 
