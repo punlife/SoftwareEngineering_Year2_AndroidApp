@@ -9,6 +9,10 @@ Invidual weekly contribution - Matus Novak
 
 ## Week 02
 
+* Set-up Android Studio project files
+* Renamed (two) Android Studio folder to fit the project requirements 
+* Researched MySQL connection with an Android app and its possible security problems.
+
 ## Week 03
 
 ## Week 04
