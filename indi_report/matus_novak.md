@@ -1,4 +1,4 @@
-Invidual weekly contribution - Matus Novak
+Individual weekly contribution - Matus Novak
 ------------------------------------------
 
 ## Week 01
