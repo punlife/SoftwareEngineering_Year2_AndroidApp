@@ -9,6 +9,7 @@
 
 - Downloaded Android Studio 
 - Researched more about dementia games
+- Created provisional logo of App
 
 ## Week 3
 
