@@ -10,6 +10,26 @@ COM2027 - Group 03 - Project
 * **[Gurung A Mr (UG - Computer Science) @ag00556](https://gitlab.eps.surrey.ac.uk/ag00556)**
 * **[Novak M Mr (UG - Computer Science) @mn00272](https://gitlab.eps.surrey.ac.uk/mn00272)**
 
+## Some core information
+
+* The list of all tasks, to-do, in-progress, and who is doing them, is located here [Google Spreadsheet](https://docs.google.com/spreadsheets/d/1eyxEYbGuQNy7x1TAffRcrKeDMrAF-x3RHt1ClXFON88/edit#gid=0) If you can think of an item to add, feel free to do so.
+* **Upload code only by using GIT! Otherwise you risk breaking the version tracking!**
+* SDK API is v21 (Android 5.0) anything below is not compatible with this project!
+* Use Log provided by the android API. For the *tag* parameter, use the name of the class. [Reference](https://developer.android.com/reference/android/util/Log.html)
+* Use Javadoc as a documentation style for the code. [Learn it, use it!](https://en.wikipedia.org/wiki/Javadoc)
+* Use indentation in your code! Don't be silly, use that whitespace.
+* Code style needs to be consistent, so:
+  * Functions, getters, setters, should start with lower case letter and follow camelCase (example: getModel, setData)
+  * Classes should always start with upper case letter and follow camelCase (example: LocalDatabaseManager, RemoteServer)
+  * Enums should wlways be UPPER CASE with underscores! (example: TOP_LEFT, TOP_RIGHT, BOTTOM_LEFT, BOTTOM_RIGHT)
+  * Inline comments, (comments inside of the function) should be simple and straight and be single line (example: // Begin HTTP request)
+  * No unnecessary comments, for example `// Loop cycle` Everyone will understand what `for(...){}` is.
+  * Javadoc style documentation for functions
+  * Multiple classes that do similar thing should also be named with a similar name (example: UserProfileData, UserProfileScore, UserProfileCurrentGame)
+* Requirements set by the module are here: `/reference/requirements.md`
+* Requirements for the app are here [Google Document](https://docs.google.com/document/d/1enj02S9Xi_geDd5Hp69fTzxsgt3Tzq7drL8lkB60ylA/edit)
+
+
 ## Folder Structure
 * **agenda** - Weekly agenda markdown files. Use the template agenda_weekxx_group03_template.md to create weekly agendas.
 * **assesments** - All assessment forms and feedback, e.g., the interim and final audit forms, should be stored here.
@@ -23,10 +43,6 @@ COM2027 - Group 03 - Project
 * **src** - Java source code
 * **user_acceptance_test** - You will find the installation files of three other groups whose work you will review.
 
-## Requirements
-
-See /reference/requirements.md 
-
 ## Recommmended software
 
 | Tool | Function | URL |
@@ -39,21 +55,6 @@ See /reference/requirements.md
 | Markdown Editor | No installation, purely online app | <https://stackedit.io/> |
 
 > I highly recommend [SourceTree by Atlassin](https://www.sourcetreeapp.com/) as your GIT client. Much more user friendly than command line! To clone a repository, make sure you have generated SSH key in your profile here on gitlab and use HTTPS (not SSH) to clone the repo!
-
-## Supervised meetings
-
-| Week No. | Time  | Place |
-|----------|-------|-------|
-| 02       | 14 February (Tuesday) 14:00 | LTA   |
-| 03       | 14 February (Tuesday) 14:00      |       |
-| 04       |       |       |
-| 05       |       |       |
-| 06       |       |       |
-| 07       |       |       |
-| 08       |       |       |
-| 09       |       |       |
-| 10       |       |       |
-| 11       |       |       |
 
 The following needs to be available at beginning of the progress meeting, both in printed form – ensuring that one copy is handed to the project manager – and the original is pushed onto your GIT repository:
 * an agenda for the current supervised progress meeting
