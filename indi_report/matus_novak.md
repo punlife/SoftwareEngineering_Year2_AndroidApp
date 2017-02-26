@@ -15,6 +15,13 @@ Individual weekly contribution - Matus Novak
 
 ## Week 03
 
+* Created OpenGL rendering wrapper
+* Set up GLSL shaders (based on version 1.3) to render simple sprites
+* Created two tests to test OpenGL capabilities
+* Created a way to rotate sprites, then edited it so any sprite can be rotated around arbitary axis and edited GLSL shaders based on it.
+* Added some information into the README.md 
+* Contributes with some items into the project list of tasks (Google spreadsheet). Accepted two task and finished one.
+
 ## Week 04
 
 ## Week 05
