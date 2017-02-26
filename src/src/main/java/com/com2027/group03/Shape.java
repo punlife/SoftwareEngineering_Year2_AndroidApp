@@ -1,5 +1,8 @@
 package com.com2027.group03;
 
+import android.opengl.Matrix;
+import android.util.Log;
+
 /**
  * Created by Matus on 21-Feb-17.
  */
@@ -11,30 +14,61 @@ public class Shape {
     };
 
     public Shape(){
+        model = new OpenGLMatrix(1.0f);
         origin = Origin.CENTER;
         color = Color.WHITE;
-        rot = 0.0f;
         setPos(0, 0);
+        setSize(0, 0);
     }
 
-    public Shape(int x, int y){
+    public Shape(float x, float y, float w, float h){
+        model = new OpenGLMatrix(1.0f);
         origin = Origin.CENTER;
         color = Color.WHITE;
-        rot = 0.0f;
         setPos(x, y);
+        setSize(w, h);
     }
 
-    public void setPos(int x, int y){
+    public void setPos(float x, float y){
         this.x = x;
         this.y = y;
     }
 
-    public int getPosX(){
-        return x;
+    public void setSize(float w, float h){
+        this.width = w;
+        this.height = h;
     }
 
-    public int getPosY(){
-        return y;
+    public float getPosX(){
+        return this.x;
+    }
+
+    public float getPosY(){
+        return this.y;
+    }
+
+    public float getWidth(){
+        return this.width;
+    }
+
+    public float getHeight(){
+        return this.width;
+    }
+
+    public void rotateX(float deg){
+        Matrix.setRotateM(this.model.ptr, 0, deg, 1.0f, 0.0f, 0.0f);
+    }
+
+    public void rotateY(float deg){
+        Matrix.setRotateM(this.model.ptr, 0, deg, 0.0f, 1.0f, 0.0f);
+    }
+
+    public void rotateZ(float deg){
+        Matrix.setRotateM(this.model.ptr, 0, deg, 0.0f, 0.0f, 1.0f);
+    }
+
+    public void rotateAxis(float deg, float x, float y, float z){
+        Matrix.setRotateM(this.model.ptr, 0, deg, x, y, z);
     }
 
     public Origin getOrigin(){
@@ -45,29 +79,17 @@ public class Shape {
         return color;
     }
 
-    public float getRotation(){
-        return rot;
-    }
-
-    public float getRot(){
-        return rot;
-    }
-
     public void setOrigin(Origin origin){
         this.origin = origin;
-    }
-
-    public void setRotation(float rot){
-        this.rot = rot;
     }
 
     public void setColor(com.com2027.group03.Color color){
         this.color = color;
     }
 
-    public int x;
-    public int y;
     public Origin origin;
-    public float rot;
     public com.com2027.group03.Color color;
+    public OpenGLMatrix model;
+    public float width, height;
+    public float x, y;
 }

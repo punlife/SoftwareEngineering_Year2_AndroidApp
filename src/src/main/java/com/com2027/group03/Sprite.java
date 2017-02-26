@@ -3,14 +3,14 @@ package com.com2027.group03;
 /**
  * Created by Matus on 21-Feb-17.
  */
-public class Sprite extends Rectangle {
+public class Sprite extends Shape {
     public Sprite(){
         super(0, 0, 1, 1);
         setSize(1, 1);
         this.texture = null;
     }
 
-    public Sprite(int x, int y, int w, int h, OpenGLTexture texture){
+    public Sprite(float x, float y, float w, float h, OpenGLTexture texture){
         super(x, y, w, h);
         setTexture(texture);
     }

@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.opengl.GLES20;
 import android.os.Bundle;
 import android.opengl.GLSurfaceView;
+import android.util.Log;
 
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
@@ -18,7 +19,6 @@ import javax.microedition.khronos.opengles.GL10;
 public class OpenGLActivity extends Activity implements GLSurfaceView.Renderer {
     private GLSurfaceView glView;
     private OpenGLShaders.SpriteShader spriteShader;
-    private OpenGLShaders.RectangleShader rectangleShader;
     private static final String TAG = "OpenGLActivity";
     private FloatBuffer spriteVbo;
     private OpenGLMatrix projection;
@@ -59,12 +59,6 @@ public class OpenGLActivity extends Activity implements GLSurfaceView.Renderer {
             spriteShader = new OpenGLShaders.SpriteShader();
         } catch (OpenGLProgram.CompileException e){
             throw new RuntimeException("Failed to create sprite shader:\n" + e.getMessage());
-        }
-
-        try {
-            rectangleShader = new OpenGLShaders.RectangleShader();
-        } catch (OpenGLProgram.CompileException e){
-            throw new RuntimeException("Failed to create rectangle shader:\n" + e.getMessage());
         }
 
         final float[] vertices = {
@@ -119,64 +113,15 @@ public class OpenGLActivity extends Activity implements GLSurfaceView.Renderer {
         return height;
     }
 
-    public void drawRectangle(Rectangle rectangle){
-        GLES20.glUseProgram(rectangleShader.getHandle());
-        GLES20.glEnableVertexAttribArray(rectangleShader.uniformVertLoc);
-        GLES20.glUniformMatrix4fv(rectangleShader.uniformProjLoc, 1, false, projection.ptr, 0);
-        GLES20.glUniform4f(rectangleShader.uniformColorLoc, rectangle.color.r, rectangle.color.g, rectangle.color.b, rectangle.color.a);
-        switch(rectangle.origin){
-            case TOP_LEFT: {
-                GLES20.glUniform4f(rectangleShader.uniformPosLoc, rectangle.x, rectangle.y, rectangle.width/2, rectangle.height/2);
-                break;
-            }
-            case TOP_CENTER: {
-                GLES20.glUniform4f(rectangleShader.uniformPosLoc, rectangle.x, rectangle.y, 0, rectangle.height/2);
-                break;
-            }
-            case TOP_RIGHT: {
-                GLES20.glUniform4f(rectangleShader.uniformPosLoc, rectangle.x, rectangle.y, -rectangle.width/2, rectangle.height/2);
-                break;
-            }
-            case LEFT: {
-                GLES20.glUniform4f(rectangleShader.uniformPosLoc, rectangle.x, rectangle.y, rectangle.width/2, 0);
-                break;
-            }
-            case CENTER: {
-                GLES20.glUniform4f(rectangleShader.uniformPosLoc, rectangle.x, rectangle.y, 0, 0);
-                break;
-            }
-            case RIGHT: {
-                GLES20.glUniform4f(rectangleShader.uniformPosLoc, rectangle.x, rectangle.y, -rectangle.width/2, 0);
-                break;
-            }
-            case BOTTOM_LEFT: {
-                GLES20.glUniform4f(rectangleShader.uniformPosLoc, rectangle.x, rectangle.y, rectangle.width/2, -rectangle.height/2);
-                break;
-            }
-            case BOTTOM_CENTER: {
-                GLES20.glUniform4f(rectangleShader.uniformPosLoc, rectangle.x, rectangle.y, 0, -rectangle.height/2);
-                break;
-            }
-            case BOTTOM_RIGHT: {
-                GLES20.glUniform4f(rectangleShader.uniformPosLoc, rectangle.x, rectangle.y, -rectangle.width/2, -rectangle.height/2);
-                break;
-            }
-        }
-        GLES20.glUniform3f(rectangleShader.uniformSizeLoc, rectangle.width, rectangle.height, rectangle.rot);
-        //GLES20.glUniform2f(rectangleShader.uniformPosLoc, rectangle.x, rectangle.y);
-        GLES20.glVertexAttribPointer(0, 2, GLES20.GL_FLOAT, false, 4 * 2, spriteVbo);
-        GLES20.glDrawArrays(GLES20.GL_TRIANGLES, 0, 6);
-        GLES20.glDisableVertexAttribArray(rectangleShader.uniformVertLoc);
-    }
-
     public void drawSprite(Sprite sprite){
         if(sprite.getTexture() == null) {
-            drawRectangle(sprite);
+            return;
         }
 
         GLES20.glUseProgram(spriteShader.getHandle());
         GLES20.glEnableVertexAttribArray(spriteShader.uniformVertLoc);
         GLES20.glUniformMatrix4fv(spriteShader.uniformProjLoc, 1, false, projection.ptr, 0);
+        GLES20.glUniformMatrix4fv(spriteShader.uniformModelLoc, 1, false, sprite.model.ptr, 0);
         GLES20.glActiveTexture(GLES20.GL_TEXTURE0);
         GLES20.glBindTexture(GLES20.GL_TEXTURE_2D, sprite.getTexture().getHandle());
         GLES20.glUniform1i(spriteShader.uniformTexLoc, 0);
@@ -220,7 +165,7 @@ public class OpenGLActivity extends Activity implements GLSurfaceView.Renderer {
                 break;
             }
         }
-        GLES20.glUniform3f(spriteShader.uniformSizeLoc, sprite.width, sprite.height, sprite.rot);
+        GLES20.glUniform2f(spriteShader.uniformSizeLoc, sprite.width, sprite.height);
         //GLES20.glUniform2f(spriteShader.uniformPosLoc, sprite.x, sprite.y);
         GLES20.glVertexAttribPointer(0, 2, GLES20.GL_FLOAT, false, 4 * 2, spriteVbo);
         GLES20.glDrawArrays(GLES20.GL_TRIANGLES, 0, 6);

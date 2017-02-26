@@ -1,5 +1,7 @@
 package com.com2027.group03;
 
+import android.opengl.Matrix;
+
 /**
  * Created by Matus on 21-Feb-17.
  */
@@ -8,14 +10,14 @@ public class OpenGLMatrix {
     public float[] ptr = new float[16];
 
     public OpenGLMatrix(){
-        ptr[0] = 1.0f;  ptr[4] = 0.0f;  ptr[8] = 0.0f; ptr[12] = 0.0f;
-        ptr[1] = 0.0f;  ptr[5] = 1.0f;  ptr[9] = 0.0f; ptr[13] = 0.0f;
-        ptr[2] = 0.0f;  ptr[6] = 0.0f;  ptr[10] = 1.0f; ptr[14] = 0.0f;
-        ptr[3] = 0.0f;  ptr[7] = 0.0f;  ptr[11] = 0.0f; ptr[15] = 1.0f;
-
+        setIdentity(1.0f);
     }
 
     public OpenGLMatrix(float f){
+        setIdentity(f);
+    }
+
+    public void setIdentity(float f){
         ptr[0] = f;     ptr[4] = 0.0f;  ptr[8] = 0.0f;  ptr[12] = 0.0f;
         ptr[1] = 0.0f;  ptr[5] = f;     ptr[9] = 0.0f;  ptr[13] = 0.0f;
         ptr[2] = 0.0f;  ptr[6] = 0.0f;  ptr[10] = f;    ptr[14] = 0.0f;
