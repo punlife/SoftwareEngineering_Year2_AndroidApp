@@ -6,7 +6,6 @@ package com.com2027.group03;
 public class Sprite extends Shape {
     public Sprite(){
         super(0, 0, 1, 1);
-        setSize(1, 1);
         this.texture = null;
     }
 

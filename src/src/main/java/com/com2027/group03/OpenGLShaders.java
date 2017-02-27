@@ -27,6 +27,7 @@ public class OpenGLShaders {
             "uniform sampler2D tex;\n" +
             "void main() {\n" +
             "  gl_FragColor = texture2D(tex, texCoord * sub.zw + sub.xy) * color;\n" +
+            "  //gl_FragColor = vec4(texCoord * sub.zw + sub.xy, 0.0f, 1.0f);\n" +
             "}\n";
 
     public static class SpriteShader extends OpenGLProgram {
