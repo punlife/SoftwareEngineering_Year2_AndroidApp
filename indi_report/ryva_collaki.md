@@ -13,7 +13,15 @@
 
 ## Week 03
 
+  - Took down minutes in the unsupervised meeting
+  - Created the document for the requirements audit and distributed the link so that all members of the group could edit it
+  - Booked a study room for our unsupervised meeting
+  - Attended the lecture on Thursday where copyright issues were discussed
+
 ## Week 04
+
+  - Uploaded the requirements audit to SurreyLearn
+  - Made a rota for the meetings - who will chair, make the agenda and take down the minutes
 
 ## Week 05
 
