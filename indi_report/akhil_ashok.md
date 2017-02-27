@@ -10,8 +10,12 @@
 - Downloaded Android Studio 
 - Researched more about dementia games
 - Created provisional logo of App
+- Attended the project management lecture held by IBM in which I was the project manager of my team. We succesfully won the competition.
 
 ## Week 3
+
+- Attended the lecture on Thursday where copyright issues were discussed.
+- Made some adjustmets to the privisional logo
 
 ## Week 4
 
