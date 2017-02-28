@@ -15,8 +15,6 @@
 - Amosh Gurung
 - Victor Artemenco
 
-(Norman Poh also present in the meeting)
-
 ***Members absent:***
 - N/A
 
