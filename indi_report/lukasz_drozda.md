@@ -12,6 +12,10 @@ Individual weekly contribution - Lukasz Drozda
 * Researched UI designs and started preliminary designs of the UI
 
 ## Week 03:
+* Wrote parts of the Requirement Audit document
+* Created mock ups about the layout of the app and the game itself
+* Started planning the classes for the logic behind the game
+
 ## Week 04:
 ## Week 05:
 ## Week 06:
