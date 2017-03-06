@@ -17,6 +17,11 @@ Individual weekly contribution - Lukasz Drozda
 * Started planning the classes for the logic behind the game
 
 ## Week 04:
+ * Create the prelimnary application logo (in its three states)
+ * Wrote the high score algorithm
+ * Acquired reference images for the background/assets
+ * Started creating the backgrounds for the app
+
 ## Week 05:
 ## Week 06:
 ## Week 07:
