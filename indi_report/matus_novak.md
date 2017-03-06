@@ -24,6 +24,10 @@ Individual weekly contribution - Matus Novak
 
 ## Week 04
 
+* Created class `OpenGLFont` for loading and rendering True Type font using GLSL shaders. 
+* Created class `Text` which extends primtivie `Shape` and is used for rendering text/string. 
+* Created UML class diagram for the latex document. 
+
 ## Week 05
 
 ## Week 06
