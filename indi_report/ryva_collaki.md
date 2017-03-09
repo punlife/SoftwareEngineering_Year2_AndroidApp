@@ -22,6 +22,7 @@
 
   - Uploaded the requirements audit to SurreyLearn
   - Made a rota for the meetings - who will chair, make the agenda and take down the minutes
+  - Began to fill in the SRS and drew the sequence and ER diagrams for the documentation
 
 ## Week 05
 

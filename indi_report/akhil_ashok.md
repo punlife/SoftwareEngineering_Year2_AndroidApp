@@ -19,6 +19,10 @@
 
 ## Week 4
 
+- Charied the supervised meeting and wrote up the Agenda
+- Created the Use Case diagram for our prject.
+- Attended project management lecture held by IBM.
+
 ## Week 5
 
 ## Week 6
