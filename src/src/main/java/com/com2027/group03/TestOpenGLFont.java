@@ -16,6 +16,8 @@ public class TestOpenGLFont extends OpenGLActivity {
         float posx = this.getWidth()/2;
         float posy = this.getHeight()/2;
 
+        // some changes
+
         texts = new Text[5];
 
         texts[0] = new Text(posx, posy, font, "Hello World!");
