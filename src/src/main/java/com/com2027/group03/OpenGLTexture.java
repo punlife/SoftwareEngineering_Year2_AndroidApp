@@ -33,7 +33,9 @@ public class OpenGLTexture {
     }
 
     public void load(final Context context, int id) throws LoadException {
-        Bitmap bmp = BitmapFactory.decodeResource(context.getResources(), id);
+        BitmapFactory.Options options = new BitmapFactory.Options();
+        options.inScaled = false;
+        Bitmap bmp = BitmapFactory.decodeResource(context.getResources(), id, options);
         if(bmp == null){
             throw new LoadException("Image failed to load from the resource: " + id);
         }
@@ -55,6 +57,9 @@ public class OpenGLTexture {
             throw new LoadException("Failed to create OpenGL Texture!");
         }
 
+        width = bmp.getWidth();
+        height = bmp.getHeight();
+
         // Bind texture to texturename
         GLES20.glActiveTexture(GLES20.GL_TEXTURE0);
         GLES20.glBindTexture(GLES20.GL_TEXTURE_2D, texture);
@@ -69,9 +74,6 @@ public class OpenGLTexture {
 
         // Load the bitmap into the bound texture.
         GLUtils.texImage2D(GLES20.GL_TEXTURE_2D, 0, bmp, 0);
-
-        width = bmp.getWidth();
-        height = bmp.getHeight();
     }
 
     public int getHandle() {

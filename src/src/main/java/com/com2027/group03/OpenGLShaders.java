@@ -14,9 +14,9 @@ public class OpenGLShaders {
             "uniform vec4 pos;\n" +
             "varying vec2 texCoord;\n" +
             "void main() {\n" +
-            "  texCoord = vert + vec2(0.5f, 0.5f);\n" +
-            "  vec4 rotated = model * vec4(vert * size.xy + pos.zw, 0.0f, 1.0f);\n" +
-            "  gl_Position = proj * vec4(rotated.xy + pos.xy, 0.0f, 1.0f);\n" +
+            "  texCoord = vert + vec2(0.5, 0.5);\n" +
+            "  vec4 rotated = model * vec4(vert * size.xy + pos.zw, 0.0, 1.0);\n" +
+            "  gl_Position = proj * vec4(rotated.xy + pos.xy, 0.0, 1.0);\n" +
             "}\n";
 
     public static final String spriteShaderFrag =
@@ -27,7 +27,7 @@ public class OpenGLShaders {
             "uniform sampler2D tex;\n" +
             "void main() {\n" +
             "  gl_FragColor = texture2D(tex, texCoord * sub.zw + sub.xy) * color;\n" +
-            "  //gl_FragColor = vec4(texCoord * sub.zw + sub.xy, 0.0f, 1.0f);\n" +
+            "  //gl_FragColor = vec4(texCoord * sub.zw + sub.xy, 0.0, 1.0);\n" +
             "}\n";
 
     public static class SpriteShader extends OpenGLProgram {

@@ -11,7 +11,12 @@ public class TestOpenGLFont extends OpenGLActivity {
     @Override
     public void setup() {
         font = new OpenGLFont();
-        font.create("fonts/FreeSans.ttf", getBaseContext(), 11);
+
+        try {
+            font.create("fonts/FreeSans.ttf", getBaseContext(), 11);
+        } catch (OpenGLFont.LoadException e){
+            throw new RuntimeException(e.getMessage());
+        }
 
         float posx = this.getWidth()/2;
         float posy = this.getHeight()/2;

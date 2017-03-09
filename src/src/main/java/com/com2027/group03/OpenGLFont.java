@@ -20,10 +20,18 @@ public class OpenGLFont {
     private int height;
     private int totalChars;
     private float[] charWidths;
+    private float[] charX;
+    private float[] charY;
     private static final String TAG = "OpenGLFont";
     private boolean loaded;
     private int textureSize;
     private float topOffset;
+
+    public class LoadException extends Exception {
+        public LoadException(String msg){
+            super(msg);
+        }
+    }
 
     public static class CharUV {
         public float x;
@@ -34,8 +42,10 @@ public class OpenGLFont {
 
     public OpenGLFont(){
         this.texture = null;
-        this.totalChars = 0xFF;
+        this.totalChars = 0x80;
         this.charWidths = new float[this.totalChars];
+        this.charX = new float[this.totalChars];
+        this.charY = new float[this.totalChars];
         this.loaded = false;
     }
 
@@ -56,7 +66,7 @@ public class OpenGLFont {
 
     public void getCharUV(char c, CharUV data){
         if(data != null){
-            int index = (int)c;
+            /*int index = (int)c;
             int offsety = index / 16;
             int offsetx = index - offsety*16;
             offsety += 1;
@@ -65,7 +75,13 @@ public class OpenGLFont {
             data.x = offsetx / 16.0f;
             data.y = offsety / 16.0f;
             data.y -= data.h;
-            data.y += this.topOffset;
+            data.y += this.topOffset;*/
+
+            int index = (int)c;
+            data.x = this.charX[index];
+            data.y = this.charY[index];
+            data.w = this.charWidths[index] / (float)this.textureSize;
+            data.h = this.height / (float)this.textureSize;
         }
     }
 
@@ -99,17 +115,16 @@ public class OpenGLFont {
         data[1] = y;
     }
 
-    public boolean create(String file, Context context, int pt){
+    public void create(String file, Context context, int pt) throws OpenGLFont.LoadException{
         if(context == null) {
-            Log.e(TAG, "context is null!");
-            return false;
+            new LoadException("context is null!");
         }
 
         //final float scale = context.getResources().getDisplayMetrics().density;
         //mGestureThreshold = (int) (GESTURE_THRESHOLD_DP * scale + 0.5f);
         float density = context.getResources().getDisplayMetrics().density;
         float pixels = (int)(density * (pt * 2.222f) + 0.5f);
-        Log.v(TAG, "Creating font of size: " + pt + "pt (" + pixels + "px)");
+        Log.d(TAG, "Creating font of size: " + pt + "pt (" + pixels + "px)");
 
         Typeface typeface = Typeface.createFromAsset(context.getAssets(), file);
         Paint paint = new Paint();
@@ -131,39 +146,48 @@ public class OpenGLFont {
             str[0] = (char)i;
             paint.getTextWidths(str, 0, 1, textSize);
             this.charWidths[i] = textSize[0];
-
             maxWidth = (int)Math.max(maxWidth, (int)this.charWidths[i]);
         }
 
         maxHeight = (int)Math.max(this.height, height);
 
-        int cellSize = Math.max(maxWidth, maxHeight);
         this.textureSize = 0;
 
-        Log.v(TAG, "Cell size: " + cellSize + "x" + cellSize);
+        Log.d(TAG, "Cell size: " + maxWidth + "x" + maxHeight);
 
-        if(cellSize <= 256/16){
-            this.textureSize = 256;
-            cellSize = 256/16;
-        }
-        else if(cellSize <= 512/16){
-            this.textureSize = 512;
-            cellSize = 512/16;
-        }
-        else if(cellSize <= 1024/16){
-            this.textureSize = 1024;
-            cellSize = 1024/16;
-        }
-        else if(cellSize <= 2048/16){
-            this.textureSize = 2048;
-            cellSize = 2048/16;
-        }
-        else {
-            Log.e(TAG, "Cannot create font! Cell is too big!");
-            return false;
+        boolean found = true;
+        for(int i = 256; i <= 4096; i *= 2){
+
+            float posx = 0.0f;
+            float posy = 0.0f;
+            this.textureSize = i;
+            found = true;
+
+            for(int c = 0; c < this.totalChars; c++){
+
+                if(posx + this.charWidths[c] > i){
+                    posx = 0.0f;
+                    posy += maxHeight;
+                    if(posy > i){
+                        Log.d(TAG, "Test: " + i + "x" + i + " failed!");
+                        found = false;
+                        break;
+                    }
+                }
+
+                this.charX[c] = posx;
+                this.charY[c] = posy;
+                posx += this.charWidths[c];
+            }
+
+            if(found)break;
         }
 
-        Log.v(TAG, "Texture size: " + this.textureSize + "x" + this.textureSize);
+        if(!found) {
+            throw new LoadException("Cannot create font! Cell of size: " + maxWidth + "x" + maxHeight + " is too big!");
+        }
+
+        Log.d(TAG, "Texture size: " + this.textureSize + "x" + this.textureSize);
 
         this.topOffset = this.topOffset / this.textureSize;
 
@@ -172,48 +196,25 @@ public class OpenGLFont {
         Canvas canvas = new Canvas(bitmap);
         bitmap.eraseColor(0x00000000);
 
-        float posx = 0.0f;
-        float posy = cellSize;
         for(int i = 0; i < this.totalChars; i++){
             str[0] = (char)i;
 
-            canvas.drawText(str, 0, 1, posx, posy, paint);
-            posx += cellSize;
-            if(posx >= this.textureSize){
-                posx = 0.0f;
-                posy += cellSize;
-            }
-        }
-
-        FileOutputStream out = null;
-        try {
-            String sdcard = Environment.getExternalStorageDirectory().toString();
-            out = new FileOutputStream(sdcard + "/TestOpenGLFont.png");
-            bitmap.compress(Bitmap.CompressFormat.PNG, 100, out); // bmp is your Bitmap instance
-            // PNG is a lossless format, the compression factor (100) is ignored
-        } catch (Exception e) {
-            e.printStackTrace();
-        } finally {
-            try {
-                if (out != null) {
-                    out.close();
-                }
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
+            canvas.drawText(str, 0, 1, this.charX[i], this.charY[i], paint);
+            this.charX[i] = this.charX[i] / (float)this.textureSize;
+            this.charY[i] = this.charY[i] / (float)this.textureSize;
+            this.charY[i] -= this.height / (float)this.textureSize;
+            this.charY[i] += this.topOffset;
         }
 
         try {
             texture = new OpenGLTexture();
             texture.load(bitmap);
         } catch (OpenGLTexture.LoadException e){
-            Log.e(TAG, "Texture failed to create: " + e.getMessage());
-            return false;
+            throw new LoadException("Texture failed to create: " + e.getMessage());
         }
 
         bitmap.recycle();
 
         this.loaded = true;
-        return true;
     }
 }

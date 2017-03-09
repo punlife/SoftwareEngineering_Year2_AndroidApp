@@ -1,9 +1,13 @@
 package com.com2027.group03;
 
+import android.util.Log;
+
 /**
  * Created by Matus on 21-Feb-17.
  */
 public class Sprite extends Shape {
+    private final static String TAG = "Sprite";
+
     public Sprite(){
         super(0, 0, 1, 1);
         this.texture = null;
