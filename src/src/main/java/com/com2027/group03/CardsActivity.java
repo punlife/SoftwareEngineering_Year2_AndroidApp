@@ -1,5 +1,6 @@
 package com.com2027.group03;
 
+import android.os.Bundle;
 import android.util.Log;
 import android.view.MotionEvent;
 
@@ -16,6 +17,7 @@ public class CardsActivity extends OpenGLActivity {
     // The padding from the border of the screen
     // In percentages!
     private static final float SCREEN_BORDER_PADDING = 0.05f; // 5%
+    private static final float CARD_BORDER_PADDING = 0.01f; // 1%
 
     @Override
     public void setup(){
@@ -47,7 +49,7 @@ public class CardsActivity extends OpenGLActivity {
         // Creating grid and the cards
         // We will create a set of 6x4 cards
         cardsRenderer.setNumOfCards(6, 4);
-        cardsRenderer.setPadding(0, 0);
+        cardsRenderer.setPadding((int)(maxSize * CARD_BORDER_PADDING), (int)(maxSize * CARD_BORDER_PADDING));
 
         // First row
         cardsRenderer.addCard(0, 0, CardsManager.get(1, 2));
@@ -108,5 +110,11 @@ public class CardsActivity extends OpenGLActivity {
 
         // Always return true because Android whatever.
         return true;
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle bundle) {
+        super.onSaveInstanceState(bundle);
+        Log.d(TAG, "Saved state");
     }
 }

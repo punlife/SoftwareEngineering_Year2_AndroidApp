@@ -75,14 +75,11 @@ public class CardsRenderer {
             int posx = pos.x + col * scalledw;
             int posy = pos.y + row * scalledh;
 
-            int padx = padding.x * (grid.x -1);
-            int pady = padding.y * (grid.y -1);
+            scalledw -= padding.x;
+            scalledh -= padding.y;
 
-            scalledw -= padx;
-            scalledh -= pady;
-
-            posx += padx / 2;
-            posy += pady / 2;
+            posx += padding.x / 2;
+            posy += padding.y / 2;
 
             sprites[col][row] = new Sprite(posx + scalledw/2, posy + scalledh/2, scalledw, scalledh, texture);
             sprites[col][row].setTextureSubsection(backSide.getU(), backSide.getV(), backSide.getS(), backSide.getT());
@@ -165,16 +162,37 @@ public class CardsRenderer {
     }
 
     public void hideCard(int col, int row){
-        if(col >= 0 && col < grid.x && row >= 0 && row < grid.y){
+        if(col >= 0 && col < grid.x && row >= 0 && row < grid.y
+                && status[col][row] == STATUS_VISIBLE){
             status[col][row] = STATUS_ROTATING_TO_HIDE_0;
             degs[col][row] = 0.0f;
         }
     }
 
-    public void showCard(int col, int row){
+    public void hideCardInstantly(int col, int row){
         if(col >= 0 && col < grid.x && row >= 0 && row < grid.y){
+            status[col][row] = STATUS_HIDDEN;
+            degs[col][row] = 0.0f;
+            sprites[col][row].setTextureSubsection(backSide.getU(), backSide.getV(), backSide.getS(), backSide.getT());
+            sprites[col][row].rotateAxis(degs[col][row], ROTATION_AXIS_X, ROTATION_AXIS_Y, ROTATION_AXIS_Z);
+        }
+    }
+
+    public void showCard(int col, int row){
+        if(col >= 0 && col < grid.x && row >= 0 && row < grid.y
+                && status[col][row] == STATUS_HIDDEN){
             status[col][row] = STATUS_ROTATING_TO_SHOW_0;
             degs[col][row] = 0.0f;
+        }
+    }
+
+    public void showCardInstantly(int col, int row){
+        if(col >= 0 && col < grid.x && row >= 0 && row < grid.y){
+            status[col][row] = STATUS_HIDDEN;
+            degs[col][row] = 0.0f;
+            final Card card = cards[col][row];
+            sprites[col][row].setTextureSubsection(card.getU(), card.getV(), card.getS(), card.getT());
+            sprites[col][row].rotateAxis(degs[col][row], ROTATION_AXIS_X, ROTATION_AXIS_Y, ROTATION_AXIS_Z);
         }
     }
 
