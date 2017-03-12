@@ -30,6 +30,11 @@ Individual weekly contribution - Matus Novak
 
 ## Week 05
 
+* Created class 'Card' for storing card information/class or anything what we will need in the future
+* Created class 'CardsManager' for storing and retriving card information based on column and row system
+* Created class 'CardsRenderer' for rendering and rotating cards when user selects them
+* Created class 'CardsActivity' as a main activity which will be used to render the cards using OpenGL
+
 ## Week 06
 
 ## Week 07
