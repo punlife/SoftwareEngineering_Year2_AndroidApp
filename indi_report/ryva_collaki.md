@@ -26,6 +26,10 @@
 
 ## Week 05
 
+  - Continued adding to the SRS
+  - Uploaded minutes for the unsupervised meeting
+  - Began coding my part of the coursework
+
 ## Week 06
 
 ## Week 07
