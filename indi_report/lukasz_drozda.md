@@ -24,6 +24,10 @@ Individual weekly contribution - Lukasz Drozda
  * Wrote parts of the design document
 
 ## Week 05:
+ * Continued working on the Backgrounds
+ * Acquired more reference images
+ * Refined the logo
+ 
 ## Week 06:
 ## Week 07:
 ## Week 08:
