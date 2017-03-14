@@ -26,6 +26,14 @@
 ### Additional Things
 
 - Spent today fixing any configuration issues on our laptops
+- Amosh is chairing the meeting and provided everything on the agenda
+- Lukaz is still working on the logic behind the game 
+- Whatever you push to the repository will get checked for syntax error then uploaded to the database server. 
+- Ryva asked about the documentations for clarification before submitting – Put everything we have into the SRS to get maximum feedback. 
+- Unofficial feedback due to not meeting up with Norman. 
+- Lega ethical requirement – content that can be used for s1, S2 is used for compliance. 
+- Make sure to go over all requirements in the updated guide. 
+- GUI/theme for app has been covered in unsupervised 
 
 ========
 
