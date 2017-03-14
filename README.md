@@ -28,6 +28,7 @@ COM2027 - Group 03 - Project
   * Multiple classes that do similar thing should also be named with a similar name (example: UserProfileData, UserProfileScore, UserProfileCurrentGame)
 * Requirements set by the module are here: `/reference/requirements.md`
 * Requirements for the app are here [Google Document](https://docs.google.com/document/d/1enj02S9Xi_geDd5Hp69fTzxsgt3Tzq7drL8lkB60ylA/edit)
+* Rota for the supervised meetings can be found here [Google Spreadsheet](https://docs.google.com/spreadsheets/d/1W1fBUHdK1AkAna4HDuE0LdCeEDSYRkQjV_MQW8nXU68/edit?usp=sharing)
 
 
 ## Folder Structure
