@@ -32,6 +32,10 @@
 
 ## Week 06
 
+  - Began coding
+  - Starting drawing the WBS
+  - Made changes to the SRS document following feedback from supervisor
+
 ## Week 07
 
 ## Week 08
