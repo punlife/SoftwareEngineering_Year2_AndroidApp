@@ -43,12 +43,8 @@
             </intent-filter>
         </activity>
 
-        <activity android:name=".CardsActivity"
-            android:parentActivityName=".MainActivity">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
+        <activity android:name=".HelpPopUp"
+            android:theme="@style/AppTheme.CustomPopupTheme">
         </activity>
     </application>
 
