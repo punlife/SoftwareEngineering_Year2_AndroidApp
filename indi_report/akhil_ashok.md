@@ -24,6 +24,9 @@
 - Attended project management lecture held by IBM.
 
 ## Week 5
+- Write the minutes for supervised meeting
+- Created the Use Case diagram for our prject.
+- Attended project management lecture held by IBM.
 
 ## Week 6
 
