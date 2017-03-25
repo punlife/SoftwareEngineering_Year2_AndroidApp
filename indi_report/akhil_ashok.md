@@ -30,6 +30,7 @@
 
 ## Week 6
 - Took minutes for supervised meeting
+- Linked Android studio to Group 3 GIT
 - Began coding
 - Started in the GUI for the game
 
