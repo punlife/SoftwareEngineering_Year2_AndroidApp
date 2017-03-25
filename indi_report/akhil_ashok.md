@@ -24,11 +24,14 @@
 - Attended project management lecture held by IBM.
 
 ## Week 5
-- Write the minutes for supervised meeting
-- Created the Use Case diagram for our prject.
-- Attended project management lecture held by IBM.
+- Wrote the minutes for supervised meeting
+- Justified design choices in supervised meeting
+- 
 
 ## Week 6
+- Took minutes for supervised meeting
+- Began coding
+- Started in the GUI for the game
 
 ## Week 7
 
