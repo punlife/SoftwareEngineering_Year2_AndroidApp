@@ -38,6 +38,10 @@
 
 ## Week 07
 
+  - Continued coding
+  - Began the group charter
+  - Continued working on the SRS
+
 ## Week 08
 
 ## Week 09
