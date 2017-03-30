@@ -24,8 +24,15 @@
 - Attended project management lecture held by IBM.
 
 ## Week 5
+- Wrote the minutes for supervised meeting
+- Justified design choices in supervised meeting
+- 
 
 ## Week 6
+- Took minutes for supervised meeting
+- Linked Android studio to Group 3 GIT
+- Began coding
+- Started in the GUI for the game
 
 ## Week 7
 
