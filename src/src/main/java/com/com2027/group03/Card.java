@@ -14,6 +14,12 @@ public class Card {
     private final int s;
     private final int t;
 
+    /**
+     * The main constructor
+     * @param coords Coordinates of the card as an array of 4 ints, use getCardCoord
+     *               in CardsManager class
+     * @param someData Any user defined data... Add more parameters if necessary
+     */
     public Card(final int[] coords, int someData){
         this.u = coords[0];
         this.v = coords[1];

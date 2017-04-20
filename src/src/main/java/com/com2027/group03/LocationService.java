@@ -20,6 +20,7 @@ import android.view.View;
 import java.util.Locale;
 
 /**
+ * This class is used to get the current location of the device.
  * Created by Matus on 17-Apr-17.
  */
 public class LocationService extends Service implements LocationListener {
@@ -30,6 +31,11 @@ public class LocationService extends Service implements LocationListener {
 
     public static final int PERMISSION_REQUEST_CODE = 1337;
 
+    /**
+     * Provides a way to create and access a single instance
+     * @param context The context of the activity class
+     * @return Instance of the LocationService
+     */
     public static LocationService singleton(Context context){
         if(instance == null){
             instance = new LocationService(context);
@@ -37,6 +43,13 @@ public class LocationService extends Service implements LocationListener {
         return instance;
     }
 
+    /**
+     * Requests permissions from the user (if required)
+     * @param activity The context of the activity class
+     * @return True if permissions were granted, otherwise false when the permissions were not
+     * granted (not yet) but the user will have to decide and the result will be available with
+     * onRequestPermissionsResult method inside of activity class
+     */
     public static boolean requestPermission(Activity activity){
         // Check if we have gps permissions
         boolean gpsPermission = ContextCompat.checkSelfPermission(
@@ -59,11 +72,19 @@ public class LocationService extends Service implements LocationListener {
         return netPermission || gpsPermission;
     }
 
+    /**
+     * The main constructor
+     */
     public LocationService(Context context){
         this.context = context;
         locationManager = (LocationManager) context.getSystemService(Context.LOCATION_SERVICE);
     }
 
+    /**
+     * Request the location
+     * @return Location of the device. Returns null if there was an error or the permissions were
+     * not granted.
+     */
     public Location getLocation(){
 
         try {

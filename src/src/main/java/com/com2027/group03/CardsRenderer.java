@@ -4,6 +4,7 @@ import android.content.Context;
 import android.util.Log;
 
 /**
+ * This class is used to render cards on the screen via OpenGLActivity
  * Created by Matus on 12-Mar-17.
  */
 public class CardsRenderer {
@@ -34,7 +35,11 @@ public class CardsRenderer {
     private static final float ROTATION_AXIS_Y = 1.0f;
     private static final float ROTATION_AXIS_Z = 0.0f;
 
-
+    /**
+     * The main constructor
+     * @param context The context of the OpenGL activity class
+     * @param id The ID of the texture file (example: R.drawable.texture_name)
+     */
     public CardsRenderer(Context context, int id){
         try {
             texture = new OpenGLTexture(context, id);
@@ -45,18 +50,38 @@ public class CardsRenderer {
         backSide = CardsManager.get(0, 0);
     }
 
+    /**
+     * Sets the grid size in pixels
+     * @param width Width of the grid
+     * @param height height of the grid
+     */
     public void setGridSize(int width, int height){
         size.set(width, height);
     }
 
+    /**
+     * Sets the grid left corner position in pixels
+     * @param x Top left corner X position
+     * @param y Top left corner Y position
+     */
     public void setGridPos(int x, int y){
         pos.set(x, y);
     }
 
+    /**
+     * Sets the padding for all cards in pixels
+     * @param x Padding for X
+     * @param y Padding for Y
+     */
     public void setPadding(int x, int y){
         padding.set(x, y);
     }
 
+    /**
+     * Sets the number of cards
+     * @param cols Number of columns
+     * @param rows Number of rows
+     */
     public void setNumOfCards(int cols, int rows){
         grid.set(cols, rows);
         cards = new Card[grid.x][grid.y];
@@ -65,6 +90,12 @@ public class CardsRenderer {
         sprites = new Sprite[grid.x][grid.y];
     }
 
+    /**
+     * Adds a card to specific column and row
+     * @param col Column position
+     * @param row Row position
+     * @param card An instance of the card
+     */
     public void addCard(int col, int row, final Card card){
         if(cards != null && col < grid.x && row < grid.y){
             cards[col][row] = card;
@@ -91,6 +122,10 @@ public class CardsRenderer {
         }
     }
 
+    /**
+     * Draws cards on the screen
+     * @param activity Instance of the OpenGLActivity activity
+     */
     public void drawCards(OpenGLActivity activity){
         if(sprites == null)return;
 
@@ -148,6 +183,12 @@ public class CardsRenderer {
         }
     }
 
+    /**
+     * Checks if the card is selected
+     * @param x Touch position X in pixels
+     * @param y Touch position Y in pixels
+     * @return Col/row coordinates of the card
+     */
     public final int[] getSelected(int x, int y){
         int[] ret = {-1, -1};
         if(x >= pos.x && x <= pos.x + size.x &&
@@ -161,6 +202,11 @@ public class CardsRenderer {
         return ret;
     }
 
+    /**
+     * Hides a card at col/row position with animation
+     * @param col Column
+     * @param row Row
+     */
     public void hideCard(int col, int row){
         if(col >= 0 && col < grid.x && row >= 0 && row < grid.y
                 && status[col][row] == STATUS_VISIBLE){
@@ -169,6 +215,11 @@ public class CardsRenderer {
         }
     }
 
+    /**
+     * Hides a card at col/row position
+     * @param col
+     * @param row
+     */
     public void hideCardInstantly(int col, int row){
         if(col >= 0 && col < grid.x && row >= 0 && row < grid.y){
             status[col][row] = STATUS_HIDDEN;
@@ -178,6 +229,11 @@ public class CardsRenderer {
         }
     }
 
+    /**
+     * Shows a card at col/row position with animation
+     * @param col Column
+     * @param row Row
+     */
     public void showCard(int col, int row){
         if(col >= 0 && col < grid.x && row >= 0 && row < grid.y
                 && status[col][row] == STATUS_HIDDEN){
@@ -186,6 +242,11 @@ public class CardsRenderer {
         }
     }
 
+    /**
+     * Shows a card at col/row position
+     * @param col Column
+     * @param row Row
+     */
     public void showCardInstantly(int col, int row){
         if(col >= 0 && col < grid.x && row >= 0 && row < grid.y){
             status[col][row] = STATUS_HIDDEN;
@@ -196,6 +257,12 @@ public class CardsRenderer {
         }
     }
 
+    /**
+     * Checks if a card is visible
+     * @param col Column
+     * @param row Row
+     * @return True if card is visible
+     */
     public boolean isVisible(int col, int row){
         if(col >= 0 && col < grid.x && row >= 0 && row < grid.y){
             return status[col][row] == STATUS_VISIBLE;
@@ -203,6 +270,11 @@ public class CardsRenderer {
         return false;
     }
 
+    /**
+     * @param col Column pos
+     * @param row Row pos
+     * @return A reference to the card at position col/row
+     */
     public final Card getCard(int col, int row){
         return cards[col][row];
     }
