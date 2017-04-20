@@ -37,9 +37,27 @@ Individual weekly contribution - Matus Novak
 
 ## Week 06
 
+* Tried to improve performance of the OpenGL renderer, however without success as the GLSL are limited especially to the GL_TRIANGLE rasterisation.
+
 ## Week 07
 
+* Helped other with any Android Studio or GIT problems.
+* Started working on the SQL management system that is based on Ruby on Rails (Model class system that is very popular in MVC systems)
+
 ## Week 08
+
+* Helped other with any further Android Studio, GIT, or programing problems.
+
+## Easter
+
+* Finished SQL manager.
+* Added class 'LocationService' for requesting permissions to use the device's location and retrieving location.
+* Added class 'LocationGeocoder' for returning 2-alpha country code from location.
+* Added class 'DatabaseLocal.Connector' for connecting, upgrading, downgrading, SQL database.
+* Added class 'DatabaseLocal.Model' for MVC style management of individual rows of the SQL table, without requiring the user to write any SQL statements.
+* Added class 'DatabaseLocal.Scheme' for easier management of the Connector class to upgrade or downgrade the database based on the provided Model classes by the user.
+* Added class 'DatabaseLocal' for inserting, updating, deleting, and finding rows of the SQL table without writing any SQL statements.
+* Added partial android tests for the 'DatabaseLocal' class(es). 
 
 ## Week 09
 
