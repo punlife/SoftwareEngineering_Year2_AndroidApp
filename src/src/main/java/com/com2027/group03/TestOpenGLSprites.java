@@ -1,5 +1,6 @@
 package com.com2027.group03;
 
+import android.os.Bundle;
 import android.util.Log;
 import android.view.MotionEvent;
 
@@ -13,7 +14,7 @@ public class TestOpenGLSprites extends OpenGLActivity {
     private Sprite[] sprites;
 
     @Override
-    public void setup(){
+    public void setup(Bundle savedInstanceState){
         this.setBackgroundColor(Color.BLACK);
 
         try {

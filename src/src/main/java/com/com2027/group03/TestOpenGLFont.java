@@ -1,5 +1,7 @@
 package com.com2027.group03;
 
+import android.os.Bundle;
+
 /**
  * Created by Matus on 26-Feb-17.
  */
@@ -9,7 +11,7 @@ public class TestOpenGLFont extends OpenGLActivity {
     private float degrees;
 
     @Override
-    public void setup() {
+    public void setup(Bundle savedInstanceState) {
         font = new OpenGLFont();
 
         try {

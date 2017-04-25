@@ -22,6 +22,7 @@ public class CardsRenderer {
     private Sprite[][] sprites = null;
     private Card backSide = null;
 
+    // Status flags, don't change any values
     private static final int STATUS_VISIBLE = 0;
     private static final int STATUS_HIDDEN = 1;
     private static final int STATUS_ROTATING_TO_HIDE_0 = 2;
@@ -29,8 +30,12 @@ public class CardsRenderer {
     private static final int STATUS_ROTATING_TO_SHOW_0 = 4;
     private static final int STATUS_ROTATING_TO_SHOW_1 = 5;
 
-    private static final float ROTATION_DEG_STEP = 2.0f;
-    private static final float ROTATION_SWITCH_FRONT_TO_BACK = 90.0f;
+    // The amount of degrees to rotate card per frame
+    private static final float ROTATION_DEG_STEP = 4.0f;
+    // Rotation axis of the card
+    // X is horizontal
+    // Y is top
+    // Z is front (pointing away from screen)
     private static final float ROTATION_AXIS_X = 0.0f;
     private static final float ROTATION_AXIS_Y = 1.0f;
     private static final float ROTATION_AXIS_Z = 0.0f;
@@ -91,6 +96,13 @@ public class CardsRenderer {
     }
 
     /**
+     * @return Number of cards that the grid can hold
+     */
+    public Vec2 getNumOfCards() {
+        return grid;
+    }
+
+    /**
      * Adds a card to specific column and row
      * @param col Column position
      * @param row Row position
@@ -131,6 +143,8 @@ public class CardsRenderer {
 
         for(int y = 0; y < grid.y; y++){
             for(int x = 0; x < grid.x; x++){
+                if(cards[x][y] == null)continue;
+
                 Sprite spr = sprites[x][y];
 
                 activity.drawSprite(spr);
@@ -203,13 +217,64 @@ public class CardsRenderer {
     }
 
     /**
+     * Shows all cards
+     * @param instant Perform rotation instantly when true
+     */
+    public void showAll(boolean instant){
+        for(int y = 0; y < grid.y; y++){
+            for(int x = 0; x < grid.x; x++){
+                if(cards[x][y] == null)continue;
+
+                if(instant){
+                    status[x][y] = STATUS_VISIBLE;
+                    final Card card = cards[x][y];
+                    sprites[x][y].setTextureSubsection(card.getU(), card.getV(), card.getS(), card.getT());
+                    sprites[x][y].rotateAxis(degs[x][y], ROTATION_AXIS_X, ROTATION_AXIS_Y, ROTATION_AXIS_Z);
+                } else {
+                    if (status[x][y] != STATUS_HIDDEN) {
+                        continue;
+                    }
+
+                    status[x][y] = STATUS_ROTATING_TO_SHOW_0;
+                    degs[x][y] = 0.0f;
+                }
+            }
+        }
+    }
+
+    /**
+     * Hides all cards
+     * @param instant Perform rotation instantly when true
+     */
+    public void hideAll(boolean instant){
+        for(int y = 0; y < grid.y; y++){
+            for(int x = 0; x < grid.x; x++){
+                if(cards[x][y] == null)continue;
+
+                if(instant){
+                    status[x][y] = STATUS_HIDDEN;
+                    sprites[x][y].setTextureSubsection(backSide.getU(), backSide.getV(), backSide.getS(), backSide.getT());
+                    sprites[x][y].rotateAxis(degs[x][y], ROTATION_AXIS_X, ROTATION_AXIS_Y, ROTATION_AXIS_Z);
+                } else {
+                    if (status[x][y] != STATUS_VISIBLE) {
+                        continue;
+                    }
+
+                    status[x][y] = STATUS_ROTATING_TO_HIDE_0;
+                    degs[x][y] = 0.0f;
+                }
+            }
+        }
+    }
+
+    /**
      * Hides a card at col/row position with animation
      * @param col Column
      * @param row Row
      */
     public void hideCard(int col, int row){
         if(col >= 0 && col < grid.x && row >= 0 && row < grid.y
-                && status[col][row] == STATUS_VISIBLE){
+                && cards[col][row] != null && status[col][row] == STATUS_VISIBLE){
             status[col][row] = STATUS_ROTATING_TO_HIDE_0;
             degs[col][row] = 0.0f;
         }
@@ -221,7 +286,7 @@ public class CardsRenderer {
      * @param row
      */
     public void hideCardInstantly(int col, int row){
-        if(col >= 0 && col < grid.x && row >= 0 && row < grid.y){
+        if(col >= 0 && col < grid.x && row >= 0 && row < grid.y && cards[col][row] != null){
             status[col][row] = STATUS_HIDDEN;
             degs[col][row] = 0.0f;
             sprites[col][row].setTextureSubsection(backSide.getU(), backSide.getV(), backSide.getS(), backSide.getT());
@@ -236,7 +301,7 @@ public class CardsRenderer {
      */
     public void showCard(int col, int row){
         if(col >= 0 && col < grid.x && row >= 0 && row < grid.y
-                && status[col][row] == STATUS_HIDDEN){
+                && cards[col][row] != null && status[col][row] == STATUS_HIDDEN){
             status[col][row] = STATUS_ROTATING_TO_SHOW_0;
             degs[col][row] = 0.0f;
         }
@@ -248,8 +313,8 @@ public class CardsRenderer {
      * @param row Row
      */
     public void showCardInstantly(int col, int row){
-        if(col >= 0 && col < grid.x && row >= 0 && row < grid.y){
-            status[col][row] = STATUS_HIDDEN;
+        if(col >= 0 && col < grid.x && row >= 0 && row < grid.y && cards[col][row] != null){
+            status[col][row] = STATUS_VISIBLE;
             degs[col][row] = 0.0f;
             final Card card = cards[col][row];
             sprites[col][row].setTextureSubsection(card.getU(), card.getV(), card.getS(), card.getT());
@@ -264,8 +329,10 @@ public class CardsRenderer {
      * @return True if card is visible
      */
     public boolean isVisible(int col, int row){
-        if(col >= 0 && col < grid.x && row >= 0 && row < grid.y){
-            return status[col][row] == STATUS_VISIBLE;
+        if(col >= 0 && col < grid.x && row >= 0 && row < grid.y && cards[col][row] != null){
+            return status[col][row] == STATUS_VISIBLE ||
+                    status[col][row] == STATUS_ROTATING_TO_SHOW_0 ||
+                    status[col][row] == STATUS_ROTATING_TO_SHOW_1;
         }
         return false;
     }

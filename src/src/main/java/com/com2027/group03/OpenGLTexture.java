@@ -20,18 +20,38 @@ public class OpenGLTexture {
         }
     }
 
+    /**
+     * Default constructor
+     */
     public OpenGLTexture(){
-
+        // Nothing to see here
     }
 
+    /**
+     * Constructor that will also call load(Context, int) method
+     * @param context Reference to the Activity context
+     * @param id ID of the asset, example: R.drawable.some_texture
+     * @throws LoadException if something went wrong.
+     */
     public OpenGLTexture(final Context context, int id) throws LoadException {
         load(context, id);
     }
 
+    /**
+     * Constructor that will also call load(Bitmap) method.
+     * @param bmp Reference to the Bitmap class.
+     * @throws LoadException if something went wrong.
+     */
     public OpenGLTexture(Bitmap bmp) throws LoadException {
         load(bmp);
     }
 
+    /**
+     * Creates texture from PNG image stored in res/drawable folder
+     * @param context Reference to the Activity context
+     * @param id ID of the asset, example: R.drawable.some_texture
+     * @throws LoadException LoadException if something went wrong.
+     */
     public void load(final Context context, int id) throws LoadException {
         BitmapFactory.Options options = new BitmapFactory.Options();
         options.inScaled = false;
@@ -48,6 +68,11 @@ public class OpenGLTexture {
         bmp.recycle();
     }
 
+    /**
+     * Creates texture from Bitmap class.
+     * @param bmp Reference to the Bitmap class.
+     * @throws LoadException if something went wrong.
+     */
     public void load(Bitmap bmp) throws LoadException {
         int[] textures = new int[1];
         GLES20.glGenTextures(1, textures, 0);
@@ -76,14 +101,23 @@ public class OpenGLTexture {
         GLUtils.texImage2D(GLES20.GL_TEXTURE_2D, 0, bmp, 0);
     }
 
+    /**
+     * @return OpenGL pointer
+     */
     public int getHandle() {
         return texture;
     }
 
+    /**
+     * @return Width of the texture
+     */
     public int getWidth() {
         return width;
     }
 
+    /**
+     * @return Height of the texture
+     */
     public int getHeight() {
         return height;
     }
