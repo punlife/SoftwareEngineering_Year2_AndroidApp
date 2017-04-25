@@ -25,6 +25,7 @@ public class OpenGLActivity extends Activity implements GLSurfaceView.Renderer {
     private OpenGLMatrix projection;
     private OpenGLMatrix defaultModel;
     private int width, height;
+    private Bundle savedInstanceState;
 
     public OpenGLActivity(){
         defaultModel = new OpenGLMatrix(1.0f);
@@ -44,6 +45,9 @@ public class OpenGLActivity extends Activity implements GLSurfaceView.Renderer {
         // Render the view only when there is a change in the drawing data
         //glView.setRenderMode(GLSurfaceView.RENDERMODE_WHEN_DIRTY);
         setContentView(glView);
+
+        Log.e(TAG, "savedInstanceState == null? " + (savedInstanceState == null));
+        this.savedInstanceState = savedInstanceState;
     }
 
     public void setBackgroundColor(Color color){
@@ -59,12 +63,15 @@ public class OpenGLActivity extends Activity implements GLSurfaceView.Renderer {
         width = glView.getWidth();
         height = glView.getHeight();
 
+        // Create and load sprite shader
         try {
             spriteShader = new OpenGLShaders.SpriteShader();
         } catch (OpenGLProgram.CompileException e){
             throw new RuntimeException("Failed to create sprite shader:\n" + e.getMessage());
         }
 
+        // Quad constructed with two triangles.
+        // OpenGL ES does not support rendering of GL_QUADS
         final float[] vertices = {
                 -0.5f, -0.5f,
                 0.5f, 0.5f,
@@ -74,21 +81,25 @@ public class OpenGLActivity extends Activity implements GLSurfaceView.Renderer {
                 0.5f, 0.5f
         };
 
+        // Very weird way of filling GL_VERTEX_BUFFER
         ByteBuffer byteBuffer = ByteBuffer.allocateDirect(vertices.length * 4);
         byteBuffer.order(ByteOrder.nativeOrder());
         spriteVbo = byteBuffer.asFloatBuffer();
         spriteVbo.put(vertices);
         spriteVbo.rewind();
 
+        // Enable blending, required by OpenGLFont class
         GLES20.glEnable(GLES20.GL_BLEND);
         GLES20.glBlendFunc(GLES20.GL_SRC_ALPHA, GLES20.GL_ONE_MINUS_SRC_ALPHA);
 
-        setup();
+        // Call setup
+        setup(this.savedInstanceState);
     }
 
     @Override
     public void onSurfaceChanged(GL10 gl, int width, int height) {
         GLES20.glViewport(0, 0, width, height);
+        // Recalculate projection matrix
         projection = OpenGLMatrix.makeOrthoMatrix(0, width, height, 0, -1.0f, 1.0f);
         this.width = width;
         this.height = height;
@@ -101,36 +112,64 @@ public class OpenGLActivity extends Activity implements GLSurfaceView.Renderer {
         render();
     }
 
+    /**
+     * This method is called every time a new frame is being rendered.
+     * A user should override this method.
+     */
     public void render(){
 
     }
 
-    public void setup(){
+    /**
+     * This method is called once the OpenGL context is crated.
+     * A user should override this method.
+     */
+    public void setup(Bundle savedInstanceState){
 
     }
 
+    /**
+     * @return The width of the rendering area in pixels
+     */
     public int getWidth(){
         return width;
     }
 
+    /**
+     * @return The height of the rendering area in pixels
+     */
     public int getHeight(){
         return height;
     }
 
+    /**
+     * Draws sprite on the screen
+     * @param sprite Non-null reference to the Sprite instance
+     */
     public void drawSprite(Sprite sprite){
         if(sprite.getTexture() == null) {
             return;
         }
 
+        // Enable sprite shader
         GLES20.glUseProgram(spriteShader.getHandle());
         GLES20.glEnableVertexAttribArray(spriteShader.uniformVertLoc);
+
+        // Model and projection matrices.
+        // View matrix is ignored as the camera position is locked to [0, 0, 0, 0]
         GLES20.glUniformMatrix4fv(spriteShader.uniformProjLoc, 1, false, projection.ptr, 0);
         GLES20.glUniformMatrix4fv(spriteShader.uniformModelLoc, 1, false, sprite.model.ptr, 0);
+
+        // Activate sprite's texture
         GLES20.glActiveTexture(GLES20.GL_TEXTURE0);
         GLES20.glBindTexture(GLES20.GL_TEXTURE_2D, sprite.getTexture().getHandle());
+
+        // Set uniforms
         GLES20.glUniform1i(spriteShader.uniformTexLoc, 0);
         GLES20.glUniform4f(spriteShader.uniformColorLoc, sprite.color.r, sprite.color.g, sprite.color.b, sprite.color.a);
         GLES20.glUniform4f(spriteShader.uniformSubLoc, sprite.subx, sprite.suby, sprite.subw, sprite.subh);
+
+        // Adjust position based on the origin of the sprite
         switch(sprite.origin){
             case TOP_LEFT: {
                 GLES20.glUniform4f(spriteShader.uniformPosLoc, sprite.x, sprite.y, sprite.width/2, sprite.height/2);
@@ -169,29 +208,53 @@ public class OpenGLActivity extends Activity implements GLSurfaceView.Renderer {
                 break;
             }
         }
+        // Set size
         GLES20.glUniform2f(spriteShader.uniformSizeLoc, sprite.width, sprite.height);
         //GLES20.glUniform2f(spriteShader.uniformPosLoc, sprite.x, sprite.y);
+
+        // Bind VBO and render QUAD
         GLES20.glVertexAttribPointer(0, 2, GLES20.GL_FLOAT, false, 4 * 2, spriteVbo);
         GLES20.glDrawArrays(GLES20.GL_TRIANGLES, 0, 6);
         GLES20.glDisableVertexAttribArray(spriteShader.uniformVertLoc);
     }
 
+    /**
+     * Draws a string on the screen
+     * @param x Position X in pixels
+     * @param y Position Y in pixels
+     * @param font Reference to the font class
+     * @param str String to render
+     * @param color Color of the string
+     */
     public void drawString(float x, float y, OpenGLFont font, String str, Color color){
         if(font == null || !font.isLoaded() || str == null)return;
 
+        // The same principle as in drawSprite
+
+        // Activate sprite shader, we will use it as font shader
         GLES20.glUseProgram(spriteShader.getHandle());
         GLES20.glEnableVertexAttribArray(spriteShader.uniformVertLoc);
+
+        // Model and projection matrices.
+        // View matrix is ignored as the camera position is locked to [0, 0, 0, 0]
         GLES20.glUniformMatrix4fv(spriteShader.uniformProjLoc, 1, false, projection.ptr, 0);
         GLES20.glUniformMatrix4fv(spriteShader.uniformModelLoc, 1, false, this.defaultModel.ptr, 0);
+
+        // Bind VBO
         GLES20.glVertexAttribPointer(0, 2, GLES20.GL_FLOAT, false, 4 * 2, spriteVbo);
+
+        // Activate Font texture (glyph atlas)
         GLES20.glActiveTexture(GLES20.GL_TEXTURE0);
         GLES20.glBindTexture(GLES20.GL_TEXTURE_2D, font.getTexture().getHandle());
         GLES20.glUniform1i(spriteShader.uniformTexLoc, 0);
+
+        // Set the color to WHITE if the color was not set
         if(color != null)
             GLES20.glUniform4f(spriteShader.uniformColorLoc, color.r, color.g, color.b, color.a);
         else
             GLES20.glUniform4f(spriteShader.uniformColorLoc, Color.WHITE.r, Color.WHITE.g, Color.WHITE.b, Color.WHITE.a);
 
+        // Draw characters one by one
         float posx = 0;
         float posy = 0;
         float fontHeight = font.getHeight();
@@ -200,6 +263,7 @@ public class OpenGLActivity extends Activity implements GLSurfaceView.Renderer {
             char chr = str.charAt(i);
             float advance = font.getAdvance(chr);
 
+            // On a newline character, move back to X and go down
             if(chr == '\n') {
                 posy += fontHeight;
                 posx = 0;
@@ -217,9 +281,15 @@ public class OpenGLActivity extends Activity implements GLSurfaceView.Renderer {
         GLES20.glDisableVertexAttribArray(spriteShader.uniformVertLoc);
     }
 
+    /**
+     * Draws text on the screen
+     * @param text Non-null reference to the Text instance
+     */
     public void drawText(Text text){
         if(text == null || text.getFont() == null || !text.getFont().isLoaded() || text.getString() == null)return;
 
+        // The same principle as in drawString
+        // The difference is that text is treated as sprite, therefor it has an origin
         GLES20.glUseProgram(spriteShader.getHandle());
         GLES20.glEnableVertexAttribArray(spriteShader.uniformVertLoc);
         GLES20.glUniformMatrix4fv(spriteShader.uniformProjLoc, 1, false, projection.ptr, 0);

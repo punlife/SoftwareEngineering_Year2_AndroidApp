@@ -14,22 +14,43 @@ public class OpenGLProgram {
         }
     }
 
+    /**
+     * Default constructor
+     */
     public OpenGLProgram(){
-
+        // Nothing to see here
     }
 
+    /**
+     * Constructor that will also call create() method.
+     * @param vertexCode Vertex shader code
+     * @param fragmentCode Fragment shader code
+     * @throws CompileException if something went wrong
+     */
     public OpenGLProgram(final String vertexCode, final String fragmentCode) throws CompileException{
         create(vertexCode, fragmentCode);
     }
 
+    /**
+     * @return Returns true if the shader has been created
+     */
     public boolean isCreated(){
         return (program != 0);
     }
 
+    /**
+     * @return Returns OpenGL pointer
+     */
     public int getHandle(){
         return program;
     }
 
+    /**
+     * Loads shader and links it altogether.
+     * @param vertexCode Vertex shader code
+     * @param fragmentCode Fragment shader code
+     * @throws CompileException if something went wrong
+     */
     public void create(final String vertexCode, final String fragmentCode) throws CompileException {
         // create empty OpenGL ES Program
         program = GLES20.glCreateProgram();

@@ -1,5 +1,6 @@
 package com.com2027.group03;
 
+import android.os.Bundle;
 import android.util.Log;
 import android.view.MotionEvent;
 
@@ -14,7 +15,7 @@ public class TestOpenGLTexture extends OpenGLActivity {
     private float degrees;
 
     @Override
-    public void setup(){
+    public void setup(Bundle savedInstanceState){
         this.setBackgroundColor(Color.CYAN);
 
         try {

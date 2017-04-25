@@ -33,6 +33,9 @@ public class OpenGLFont {
         }
     }
 
+    /**
+     * Character data
+     */
     public static class CharUV {
         public float x;
         public float y;
@@ -40,6 +43,9 @@ public class OpenGLFont {
         public float h;
     }
 
+    /**
+     * Default constructor
+     */
     public OpenGLFont(){
         this.texture = null;
         this.totalChars = 0x80;
@@ -49,14 +55,25 @@ public class OpenGLFont {
         this.loaded = false;
     }
 
+    /**
+     * @return Reference to the texture atlas of glyphs
+     */
     public OpenGLTexture getTexture() {
         return this.texture;
     }
 
+    /**
+     * @return Returns true of font as been loaded
+     */
     public boolean isLoaded(){
         return this.loaded;
     }
 
+    /**
+     * Returns an advance of specific character
+     * @param c Char to get advance of
+     * @return Advance in pixels
+     */
     public float getAdvance(char c){
         if(!loaded)return 0.0f;
         int index = (int)c;
@@ -64,19 +81,13 @@ public class OpenGLFont {
         else return this.charWidths[index];
     }
 
+    /**
+     * Gets a UV coordinates of specific character and puts it in CharUV
+     * @param c Char to get UV of
+     * @param data Non-null reference to CharUV
+     */
     public void getCharUV(char c, CharUV data){
         if(data != null){
-            /*int index = (int)c;
-            int offsety = index / 16;
-            int offsetx = index - offsety*16;
-            offsety += 1;
-            data.w = getAdvance(c) / (float)(this.textureSize);
-            data.h = this.height / (float)(this.textureSize);
-            data.x = offsetx / 16.0f;
-            data.y = offsety / 16.0f;
-            data.y -= data.h;
-            data.y += this.topOffset;*/
-
             int index = (int)c;
             data.x = this.charX[index];
             data.y = this.charY[index];
@@ -85,10 +96,19 @@ public class OpenGLFont {
         }
     }
 
+    /**
+     * @return Height of the font in pixels
+     */
     public float getHeight(){
         return this.height;
     }
 
+    /**
+     * Calculates size of the string that would be occupied if the string was rendered
+     * on the screen.
+     * @param str String to get size from.
+     * @param data Array of 2 floats to put the result in.
+     */
     public void getStringSize(String str, float[] data){
         if(data == null || str == null)return;
 
@@ -115,6 +135,13 @@ public class OpenGLFont {
         data[1] = y;
     }
 
+    /**
+     * Loads a true type font
+     * @param file Name of the file
+     * @param context Reference to the Activity context
+     * @param pt Size of the desired font in points
+     * @throws OpenGLFont.LoadException If loading failed
+     */
     public void create(String file, Context context, int pt) throws OpenGLFont.LoadException{
         if(context == null) {
             new LoadException("context is null!");
@@ -126,14 +153,18 @@ public class OpenGLFont {
         float pixels = (int)(density * (pt * 2.222f) + 0.5f);
         Log.d(TAG, "Creating font of size: " + pt + "pt (" + pixels + "px)");
 
+        // Load true type font
         Typeface typeface = Typeface.createFromAsset(context.getAssets(), file);
+
+        // Font will be rendered glyph by glyph by Paint class
         Paint paint = new Paint();
         paint.setTypeface(typeface);
         paint.setTextSize(pixels);
         paint.setAntiAlias(true);
         paint.setColor(0xffffffff);
-
         Paint.FontMetrics font = paint.getFontMetrics();
+
+        // Calculate font height
         this.height = (int)Math.ceil(Math.abs(font.bottom) + Math.abs(font.top));
         this.topOffset = (float)Math.abs(font.bottom);
 
@@ -142,6 +173,7 @@ public class OpenGLFont {
         int maxWidth = 0;
         int maxHeight = 0;
 
+        // Calculate height of all characters
         for(int i = 0; i < this.totalChars; i++){
             str[0] = (char)i;
             paint.getTextWidths(str, 0, 1, textSize);
@@ -149,12 +181,17 @@ public class OpenGLFont {
             maxWidth = (int)Math.max(maxWidth, (int)this.charWidths[i]);
         }
 
+        // Get the maximum height of all glyphs
         maxHeight = (int)Math.max(this.height, height);
 
         this.textureSize = 0;
 
+        // The cell size is a rectangle that can hold any glyph from this TTF font
         Log.d(TAG, "Cell size: " + maxWidth + "x" + maxHeight);
 
+        // Try to fit all glyphs into the texture.
+        // Start with texture size of 256 and double it each time.
+        // Continue until 4096 which is the "optimal" limit of OpenGL texture size of android phones
         boolean found = true;
         for(int i = 256; i <= 4096; i *= 2){
 
@@ -169,6 +206,7 @@ public class OpenGLFont {
                     posx = 0.0f;
                     posy += maxHeight;
                     if(posy > i){
+                        // Could not fit any more glyphs
                         Log.d(TAG, "Test: " + i + "x" + i + " failed!");
                         found = false;
                         break;
@@ -180,9 +218,11 @@ public class OpenGLFont {
                 posx += this.charWidths[c];
             }
 
+            // All glyphs fit?
             if(found)break;
         }
 
+        // Throw if any of the available texture sizes were too small to fit all glyphs.
         if(!found) {
             throw new LoadException("Cannot create font! Cell of size: " + maxWidth + "x" + maxHeight + " is too big!");
         }
@@ -191,11 +231,14 @@ public class OpenGLFont {
 
         this.topOffset = this.topOffset / this.textureSize;
 
-        // Alpha only
+        // Create bitmap as RGBA 8-bit per channel.
+        // Bitmap.Config.ALPHA_8 would fit better, however it seems to not to work at all.
+        // Bitmap.Config.ALPHA_8 would also fit better with GL_RED or GL_LUMINANCE_8 or GL_ALPHA_8
         Bitmap bitmap = Bitmap.createBitmap(this.textureSize, this.textureSize, Bitmap.Config.ARGB_8888);
         Canvas canvas = new Canvas(bitmap);
         bitmap.eraseColor(0x00000000);
 
+        // Render all glyphs into temporary bitmap
         for(int i = 0; i < this.totalChars; i++){
             str[0] = (char)i;
 
@@ -206,6 +249,7 @@ public class OpenGLFont {
             this.charY[i] += this.topOffset;
         }
 
+        // Create texture from the bitmap
         try {
             texture = new OpenGLTexture();
             texture.load(bitmap);
@@ -213,6 +257,7 @@ public class OpenGLFont {
             throw new LoadException("Texture failed to create: " + e.getMessage());
         }
 
+        // Free bitmap
         bitmap.recycle();
 
         this.loaded = true;
