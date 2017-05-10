@@ -23,7 +23,7 @@ public class CardsManager {
     // This is the array that holds all card data, statically
     // The number '42' is just an example how to add any kind of information to the card
     // See the constructor for the Card class
-    private static final Card[] cards = {
+    public static final Card[] cards = {
         new Card(getCardCoords(0, 0), 0, "Back"), // Card back side - col 0 row 0
         new Card(getCardCoords(1, 0), 1, "Chair"), // Card #1  - col 1 row 0
         new Card(getCardCoords(2, 0), 1, "Sofa"), // Card #2  - col 2 row 0

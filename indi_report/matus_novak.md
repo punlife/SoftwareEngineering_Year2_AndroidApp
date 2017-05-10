@@ -51,17 +51,25 @@ Individual weekly contribution - Matus Novak
 ## Easter
 
 * Finished SQL manager.
-* Added class 'LocationService' for requesting permissions to use the device's location and retrieving location.
-* Added class 'LocationGeocoder' for returning 2-alpha country code from location.
-* Added class 'DatabaseLocal.Connector' for connecting, upgrading, downgrading, SQL database.
-* Added class 'DatabaseLocal.Model' for MVC style management of individual rows of the SQL table, without requiring the user to write any SQL statements.
-* Added class 'DatabaseLocal.Scheme' for easier management of the Connector class to upgrade or downgrade the database based on the provided Model classes by the user.
-* Added class 'DatabaseLocal' for inserting, updating, deleting, and finding rows of the SQL table without writing any SQL statements.
+* Added class `LocationService` for requesting permissions to use the device's location and retrieving location.
+* Added class `LocationGeocoder` for returning 2-alpha country code from location.
+* Added class `DatabaseLocal.Connector` for connecting, upgrading, downgrading, SQL database.
+* Added class `DatabaseLocal.Model` for MVC style management of individual rows of the SQL table, without requiring the user to write any SQL statements.
+* Added class `DatabaseLocal.Scheme` for easier management of the Connector class to upgrade or downgrade the database based on the provided Model classes by the user.
+* Added class `DatabaseLocal` for inserting, updating, deleting, and finding rows of the SQL table without writing any SQL statements.
 * Added partial android tests for the 'DatabaseLocal' class(es). 
 
 ## Week 09
 
+* Started working on finishing `CardsActivity` and implementing a working example
+
 ## Week 10
+
+* Finished working on `CardsActivity `
+* Created a **first** working playeable example
+* Added `Shape.scale()` and `Shape.isTouched()` functions
+* Fixed an issue with `Shape` class when dealing with width and height values
+* Added extra support methods in `CardsRenderer` class.
 
 ## Week 11
 

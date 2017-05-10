@@ -52,7 +52,7 @@ public class Shape {
     }
 
     public float getHeight(){
-        return this.width;
+        return this.height;
     }
 
     public void rotateX(float deg){
@@ -71,6 +71,11 @@ public class Shape {
         Matrix.setRotateM(this.model.ptr, 0, deg, x, y, z);
     }
 
+    public void scale(float x, float y, float z){
+        model.setIdentity(1.0f);
+        Matrix.scaleM(this.model.ptr, 0, x, y, z);
+    }
+
     public Origin getOrigin(){
         return origin;
     }
@@ -85,6 +90,61 @@ public class Shape {
 
     public void setColor(com.com2027.group03.Color color){
         this.color = color;
+    }
+
+    public boolean isTouched(int x, int y){
+        int originx = (int)this.x;
+        int originy = (int)this.y;
+        int w = (int)this.width;
+        int h = (int)this.height;
+
+        switch(this.origin){
+            case TOP_LEFT: {
+                break;
+            }
+            case TOP_CENTER: {
+                originx -= w/2;
+                break;
+            }
+            case TOP_RIGHT: {
+                originx -= w;
+                break;
+            }
+            case LEFT: {
+                originy -= h/2;
+                break;
+            }
+            case CENTER: {
+                originy -= h/2;
+                originx -= w/2;
+                break;
+            }
+            case RIGHT: {
+                originy -= h/2;
+                originx -= w;
+                break;
+            }
+            case BOTTOM_LEFT: {
+                originy -= h;
+                break;
+            }
+            case BOTTOM_CENTER: {
+                originy -= h;
+                originx -= w/2;
+                break;
+            }
+            case BOTTOM_RIGHT: {
+                originy -= h;
+                originx -= w;
+                break;
+            }
+        }
+
+        if(x > originx && x < originx + w &&
+                y > originy && y < originy + h){
+            return true;
+        }
+        return false;
     }
 
     public Origin origin;
