@@ -14,6 +14,9 @@ public class MainActivity extends AppCompatActivity {
         //Intent intent = new Intent(this, TestSpritesActivity.class);
         //startActivity(intent);
 
-        // testing git
+        Intent intent = new Intent(this, CardsActivity.class);
+        intent.putExtra("cardsPerRow", 3); // 3 cards per row, therefore 2 cards per column
+        intent.putExtra("initialShowDelay", 6000); // 3 seconds
+        startActivity(intent);
     }
 }

@@ -29,6 +29,7 @@ public class CardsRenderer {
     private static final int STATUS_ROTATING_TO_HIDE_1 = 3;
     private static final int STATUS_ROTATING_TO_SHOW_0 = 4;
     private static final int STATUS_ROTATING_TO_SHOW_1 = 5;
+    private static final int STATUS_MINIMIZE = 6;
 
     // The amount of degrees to rotate card per frame
     private static final float ROTATION_DEG_STEP = 4.0f;
@@ -39,6 +40,8 @@ public class CardsRenderer {
     private static final float ROTATION_AXIS_X = 0.0f;
     private static final float ROTATION_AXIS_Y = 1.0f;
     private static final float ROTATION_AXIS_Z = 0.0f;
+
+    private int totalCardsLeft = 0;
 
     /**
      * The main constructor
@@ -131,7 +134,22 @@ public class CardsRenderer {
 
             Log.d(TAG, "Adding new card to col/row: " + col + ", " + row + " at pos: "
                     + posx + "x" + posy + " with size: " + scalledw + "x" + scalledh);
+
+            totalCardsLeft++;
         }
+    }
+
+    public void removeCard(int col, int row){
+        if(cards != null && col < grid.x && row < grid.y) {
+            status[col][row] = STATUS_MINIMIZE;
+            degs[col][row] = 1.0f;
+
+            Log.d(TAG, "Removing card from col/row: " + col + ", " + row);
+        }
+    }
+
+    public int getTotalCardsLeft(){
+        return totalCardsLeft;
     }
 
     /**
@@ -148,6 +166,18 @@ public class CardsRenderer {
                 Sprite spr = sprites[x][y];
 
                 activity.drawSprite(spr);
+
+                // Should we minimize the card? (remove it)
+                if(status[x][y] == STATUS_MINIMIZE){
+                    // Scale it down each frame until the scale is lower than zero.
+                    // Degrees are used as scale factor 1.0 - 0.0
+                    sprites[x][y].scale(degs[x][y], degs[x][y], 1.0f);
+                    degs[x][y] -= 0.05f;
+                    if(degs[x][y] < 0.0f){
+                        cards[x][y] = null;
+                        totalCardsLeft--;
+                    }
+                }
 
                 if(status[x][y] == STATUS_ROTATING_TO_SHOW_0){
                     degs[x][y] += ROTATION_DEG_STEP;
@@ -274,8 +304,9 @@ public class CardsRenderer {
      */
     public void hideCard(int col, int row){
         if(col >= 0 && col < grid.x && row >= 0 && row < grid.y
-                && cards[col][row] != null && status[col][row] == STATUS_VISIBLE){
-            status[col][row] = STATUS_ROTATING_TO_HIDE_0;
+                && cards[col][row] != null){
+            if(status[col][row] != STATUS_HIDDEN && status[col][row] != STATUS_ROTATING_TO_HIDE_0)
+                status[col][row] = STATUS_ROTATING_TO_HIDE_0;
             degs[col][row] = 0.0f;
         }
     }
@@ -301,8 +332,9 @@ public class CardsRenderer {
      */
     public void showCard(int col, int row){
         if(col >= 0 && col < grid.x && row >= 0 && row < grid.y
-                && cards[col][row] != null && status[col][row] == STATUS_HIDDEN){
-            status[col][row] = STATUS_ROTATING_TO_SHOW_0;
+                && cards[col][row] != null){
+            if(status[col][row] != STATUS_VISIBLE && status[col][row] != STATUS_ROTATING_TO_SHOW_0)
+                status[col][row] = STATUS_ROTATING_TO_SHOW_0;
             degs[col][row] = 0.0f;
         }
     }
