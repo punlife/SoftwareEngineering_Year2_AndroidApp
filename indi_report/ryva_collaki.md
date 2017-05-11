@@ -54,6 +54,9 @@
 
 ## Week 10
 
+  - Added comments to the code
+  - Continued working on the SRS
+
 ## Week 11
 
 ## Week 12
