@@ -13,4 +13,20 @@
     <string name="alert_message">No app to send the email was found</string>
     <string name="okay_button">OKAY</string>
 
+    <string name="help_screen_title">HELP</string>
+    <string name="help_screen_description1">
+        <![CDATA[
+       <big>
+        <p1>This game will test your memory and help you to exercise your brain.<p/><big/>
+        <h2>GAMEPLAY<h2/>
+        <p2>1. The game will present you with 6 cards on the first level and the number of cards will increase after each level. You will be given 6 seconds to memorize the position of the given cards.
+         After 6 seconds all the cards on the screen are flipped.<p2/><br/><br/>
+        <p3>2. There will always be two cards with same picture and clicking on a card will turn it around. <p3/><big/><br/>
+        ]]>
+    </string>
+    <string name="help_screen_description2">
+        <![CDATA[<big>
+        <p1>3. Pair two cards with same picture to make them disappear. Find all the pairs to complete the game. Have fun!!<p1/><big/>
+        ]]>
+    </string>
 </resources>
