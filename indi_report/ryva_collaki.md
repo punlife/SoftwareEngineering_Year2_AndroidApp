@@ -44,7 +44,12 @@
 
 ## Week 08
 
+  - Created the agenda for the unsupervised meeting
+  - Continued working on the audit report
+  - Emailed Norman about not wanting to partake in next week's supervised meeting
+
 ## Week 09
+
 
 ## Week 10
 
