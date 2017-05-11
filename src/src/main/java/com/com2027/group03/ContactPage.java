@@ -24,6 +24,12 @@ import java.util.ArrayList;
 public class ContactPage extends AppCompatActivity {
 
     Context context = this;
+    private TextView fullName;
+    private EditText name;
+    private TextView emailAdd;
+    private EditText email;
+    private TextView messageLabel;
+    private EditText message;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -45,8 +51,8 @@ public class ContactPage extends AppCompatActivity {
         linearLayout.addView(contactInfo);
 
         // TEXTVIEW AND EDITEXT FOR THE NAME
-        final TextView fullName = new TextView(this);
-        final EditText name = new EditText(this);
+        fullName = new TextView(this);
+        name = new EditText(this);
 
         fullName.setText(R.string.name_label);
         name.setHint(R.string.full_name);
@@ -74,8 +80,8 @@ public class ContactPage extends AppCompatActivity {
         linearLayout.addView(natureOfEmail);
 
         // TEXTVIEW AND EDITTEXT FOR THE EMAIL
-        final TextView emailAdd = new TextView(this);
-        final EditText email = new EditText(this);
+        emailAdd = new TextView(this);
+        email = new EditText(this);
 
         emailAdd.setText(R.string.email_label);
         email.setHint(R.string.email);
@@ -85,8 +91,8 @@ public class ContactPage extends AppCompatActivity {
 
 
         // TEXTVIEW AND EDITTEXT FOR THE MESSAGE
-        final TextView messageLabel = new TextView(this);
-        final EditText message = new EditText(this);
+        messageLabel = new TextView(this);
+        message = new EditText(this);
 
         messageLabel.setText(R.string.message_label);
         message.setHint(R.string.message);
@@ -143,7 +149,6 @@ public class ContactPage extends AppCompatActivity {
                 }
             }
         });
-
 
         setContentView(linearLayout);
 
