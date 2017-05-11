@@ -44,6 +44,7 @@ public class SharedPrefManager {
         return true;
     }
 
+    // method to see if the user is logged in or not
     public boolean isLoggedIn(){
         SharedPreferences sharedPreferences = mCtx.getSharedPreferences(SHARED_PREF_NAME, Context.MODE_PRIVATE);
         if(sharedPreferences.getString(KEY_USERNAME, null) != null){
@@ -52,6 +53,7 @@ public class SharedPrefManager {
         return false;
     }
 
+    // logout from the application
     public boolean logout(){
         SharedPreferences sharedPreferences = mCtx.getSharedPreferences(SHARED_PREF_NAME, Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPreferences.edit();
@@ -60,12 +62,13 @@ public class SharedPrefManager {
         return true; 
     }
 
-
+    // retrieve the user's user name
     public String getUsername(){
         SharedPreferences sharedPreferences = mCtx.getSharedPreferences(SHARED_PREF_NAME, Context.MODE_PRIVATE);
         return sharedPreferences.getString(KEY_USERNAME, null);
     }
 
+    // retrieve the user's email
     public String getUserEmail(){
         SharedPreferences sharedPreferences = mCtx.getSharedPreferences(SHARED_PREF_NAME, Context.MODE_PRIVATE);
         return sharedPreferences.getString(KEY_USER_EMAIL, null);
