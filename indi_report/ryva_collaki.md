@@ -44,9 +44,18 @@
 
 ## Week 08
 
+  - Continued working on the audit report
+  
 ## Week 09
 
+  - Created the agenda for the unsupervised meeting
+  - Continued working on the audit report
+  - Emailed Norman about not wanting to partake in next week's supervised meeting
+
 ## Week 10
+
+  - Added comments to the code
+  - Continued working on the SRS
 
 ## Week 11
 
