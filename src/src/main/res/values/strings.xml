@@ -30,18 +30,6 @@
         ]]>
     </string>
 
-    <string name="app_name">Group03</string>
-    <string name="welcome_contact_message">Please fill in the form below in order to get in touch with us about any issues that might have come up through \n use of the app. Or if there is something that you liked, you \n can let us know about that too!</string>
-    <string name="name_label">\n \n Please Enter Your Full Name</string>
-    <string name="full_name">FULL NAME</string>
-    <string name="nature">\n \n What is the nature of your email?</string>
-    <string name="email_label">\n \n Please Enter Your Email Address</string>
-    <string name="email">EMAIL</string>
-    <string name="message_label">\n \n Please Enter Your Message</string>
-    <string name="message">MESSAGE</string>
-    <string name="send_button">SEND</string>
-    <string name="alert_message">No app to send the email was found</string>
-    <string name="okay_button">OKAY</string>
     <string name="title_activity_settings">Settings</string>
 
     <!-- Strings related to Settings -->
