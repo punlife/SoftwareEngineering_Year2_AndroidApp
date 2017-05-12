@@ -10,7 +10,7 @@ import android.widget.Toast;
 
 public class ProfileActivity extends AppCompatActivity {
 
-
+    // declare fields to view the user name and email
     private TextView textViewUsername, textViewUserEmail;
 
 
@@ -24,9 +24,9 @@ public class ProfileActivity extends AppCompatActivity {
             startActivity(new Intent(this, LoginActivity.class));
         }
 
+        // inflate the text views
         textViewUsername = (TextView) findViewById(R.id.textViewUsername);
         textViewUserEmail = (TextView) findViewById(R.id.textViewUseremail);
-
 
         textViewUserEmail.setText(SharedPrefManager.getInstance(this).getUserEmail());
         textViewUsername.setText(SharedPrefManager.getInstance(this).getUsername());
@@ -38,6 +38,14 @@ public class ProfileActivity extends AppCompatActivity {
         return true;
     }
 
+    /**
+     * If the user clicks on the login button, they will be asked to log in
+     * Should they click on the settings button, a message saying that they
+     *  clicked on the settings page will be displayed
+     *
+     * @param item
+     * @return
+     */
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch(item.getItemId()){

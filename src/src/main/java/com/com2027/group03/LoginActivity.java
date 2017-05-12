@@ -23,7 +23,9 @@ import java.util.Map;
 
 public class LoginActivity extends AppCompatActivity implements View.OnClickListener {
 
+    //  declare field to edit username and password
     private EditText editTextUsername, editTextPassword;
+    // declare button to login
     private Button buttonLogin;
     private ProgressDialog progressDialog;
 
@@ -38,10 +40,12 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
             return;
         }
 
+        // inflate the edit texts
         editTextUsername = (EditText) findViewById(R.id.editTextUsername);
         editTextPassword = (EditText) findViewById(R.id.editTextPassword);
         buttonLogin = (Button) findViewById(R.id.buttonLogin);
 
+        // progress dialog which will ask the user to wait whilst it is working
         progressDialog = new ProgressDialog(this);
         progressDialog.setMessage("Please wait...");
 
@@ -50,11 +54,17 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     }
 
     private void userLogin(){
+        // get the username and password typed by the user and converting it into a string
         final String username = editTextUsername.getText().toString().trim();
         final String password = editTextPassword.getText().toString().trim();
 
+        // display the progress dialog
         progressDialog.show();
 
+        /**
+         * should everything be successful, save the new user name and password to the database
+         * if there is an error, alert the user and get them to re-enter their details
+         */
         StringRequest stringRequest = new StringRequest(
                 Request.Method.POST,
                 Constants.URL_LOGIN,
@@ -98,6 +108,9 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                     }
                 }
         ){
+            /*
+            create a map and key with the user names and passwords
+             */
             @Override
             protected Map<String, String> getParams() throws AuthFailureError {
                 Map<String, String> params = new HashMap<>();

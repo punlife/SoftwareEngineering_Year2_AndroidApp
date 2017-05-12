@@ -1,10 +1,15 @@
 package com.com2027.group03;
 
+import android.app.AlertDialog;
+import android.app.Dialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.MotionEvent;
+import android.widget.RadioButton;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.TimerTask;
@@ -12,7 +17,6 @@ import java.util.Timer;
 
 import java.util.Random;
 import java.util.concurrent.atomic.AtomicBoolean;
-import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * Created by Matus on 12-Mar-17.
@@ -52,6 +56,11 @@ public class CardsActivity extends OpenGLActivity {
     private int startDelay = 0;
     private AtomicBoolean showTimer = new AtomicBoolean(false);
     private static final String TAG = "CardsActivity";
+    private int difficulty = 1;
+    private int cardMatchCounter = 0;
+    private List<String> pickedCardTypes = new ArrayList<String>();
+    private final String[] cardTypes = {"Chair","Sofa", "Rose","Sunflower", "Modern car", "Old car", "Shell", "Fossil", "Crow", "Seagull", "Green tree", "Yellow tree", "Elder leaf", "Chestnut leaf",
+            "Strawberry", "Peach", "Plant", "Plant", "Snowy peak", "Mountain", "Notebook", "Book", "Spoon", "Fork", "Pencil", "Pen"};
 
     // The padding from the border of the screen
     // In percentages!
@@ -232,7 +241,7 @@ public class CardsActivity extends OpenGLActivity {
 
                     // Check if this type of card is already in the grid
                     // If yes, pick one randomly again
-                    if(listOfCards.contains(index))continue;
+                    //if(listOfCards.contains(index))continue;
                     break;
                 }
 
@@ -243,7 +252,7 @@ public class CardsActivity extends OpenGLActivity {
 
                 // Get a random next available space and put the same card
                 // over there to create a pair
-                // Best case scenatio complexity O(1)
+                // Best case scenario complexity O(1)
                 // Worst case scenario complexity O(infinity)
                 while(true){
 
@@ -269,7 +278,7 @@ public class CardsActivity extends OpenGLActivity {
         disableTouch.set(true);
         showTimer.set(true);
 
-        Log.d(TAG, "Hidding all cards in " + startDelay + " ms");
+        Log.d(TAG, "Hiding all cards in " + startDelay + " ms");
 
         new Timer().schedule(new TimerTask() {
             @Override
@@ -406,13 +415,16 @@ public class CardsActivity extends OpenGLActivity {
                                     Log.d(TAG, "Removing selected cards...");
                                     PickedCard sa = pickedCards.get(0);
                                     PickedCard sb = pickedCards.get(1);
+                                    pickedCardTypes.add(sa.card.getName());
+                                    Log.d(TAG, "Removing selected cards..."+ pickedCardTypes.size()+ pickedCardTypes.get(pickedCardTypes.size()-1));
+
                                     cardsRenderer.removeCard(sa.x, sa.y);
                                     cardsRenderer.removeCard(sb.x, sb.y);
                                     disableTouch.set(false);
                                     pickedCards.clear();
                                 }
                             }, 1000);
-                        } else {
+                        nBack();} else {
                             Log.d(TAG, "Not the same cards!");
                             disableTouch.set(true);
 
@@ -491,5 +503,138 @@ public class CardsActivity extends OpenGLActivity {
         //bundle.putBooleanArray("visible", visible);
     }
 
+    private String findCardType(String type){
+        String stype = "default";
+        
+        switch (type){
+            case "Chair":
+                stype = "Chair";
+                break;
+            case "Sofa":
+                stype ="Sofa";
+                break;
+            case "Rose":
+                stype ="Rose";
+                break;
+            case "Sunflower":
+                stype = "Sunflower";
+                break;
+            case "Modern car":
+                stype = "Modern car";
+                break;
+            case "Old car":
+                stype = "Old car";
+                break;
+            case "Shell":
+                stype ="Shell";
+                break;
+            case "Fossil":
+                stype ="Fossil";
+                break;
+            case "Crow":
+                stype = "Crow";
+                break;
+            case "Seagull":
+                stype = "Seagull";
+                break;
+            case "Green tree":
+                stype = "Green tree";
+                break;
+            case "Yellow tree":
+                stype = "Yellow tree";
+                break;
+            case "Elder leaf":
+                stype = "Sunflower";
+                break;
+            case "Chestnut leaf":
+                stype = "Elder leaf";
+                break;
+            case "Strawberry":
+                stype = "Chestnut leaf";
+                break;
+            case "Peach":
+                stype = "Peach";
+                break;
+            case "Plant":
+                stype = "Plant";
+                break;
+            case "Snowy peak":
+                stype = "Snowy peak";
+                break;
+            case "Mountain":
+                stype = "Mountain";
+                break;
+            case "Notebook":
+                stype = "Notebook";
+                break;
+            case "Book":
+                stype = "Book";
+                break;
+            case "Spoon":
+                stype = "Spoon";
+                break;
+            case "Fork":
+                stype = "Fork";
+                break;
+            case "Pencil":
+                stype = "Pencil";
+                break;
+            case "Pen":
+                stype = "Pen";
+                break;
+            default:
+                break;
+        }
+        return stype;
+    }
+    private void nBack(){
+        cardMatchCounter +=1;
+        ///MY SPACE FAM
+        ///RESERVED INIT
+        /// -L
+        ///
+        ///
+        ///
+        ///
+        ///
+        ///
+        ///
+        ///
+        ///
+        ///
+        ///
+        ///Lukas' n-back implementation
+        if (difficulty !=0 && difficulty == cardMatchCounter ) {
+            if (pickedCardTypes.size() - difficulty >= 0) {
+                String[] items = new String[3];
+                items[0] = pickedCardTypes.get(pickedCardTypes.size() - difficulty);
+                items[1] = cardTypes[new Random().nextInt(cardTypes.length)];
+                while (items[1] == items[0]) {
+                    items[1] = cardTypes[new Random().nextInt(cardTypes.length)];
+                }
+                while (items[2] == items[0] || items[2] == items[1]) {
+                    items[2] = cardTypes[new Random().nextInt(cardTypes.length)];
+                }
+                new AlertDialog.Builder(CardsActivity.this)
+                        .setTitle("Pick a card")
+                        .setMessage("Which card have you picked " + cardMatchCounter + " turns ago?")
+                        .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int which) {
+                                // continue with delete
+                            }
+                        })
+                        .setSingleChoiceItems(items, -1,
+                                new DialogInterface.OnClickListener() {
+                                    public void onClick(DialogInterface dialog, int item) {
 
+                                    }
+                                })
+                        .setIcon(android.R.drawable.ic_dialog_alert)
+                        .show();
+
+                cardMatchCounter = 0;
+            }
+        }
+
+    }
 }
