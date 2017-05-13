@@ -9,13 +9,17 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
+import retrofit2.Call;
+import retrofit2.Callback;
+
 public class RegisterActivity extends AppCompatActivity implements View.OnClickListener {
 
-
+    // fields to edit the user name, email and password
     private EditText editTextUsername, editTextEmail, editTextPassword;
+    // declare the register button
     private Button buttonRegister;
     private ProgressDialog progressDialog;
-
+    // declare field to display the login message
     private TextView textViewLogin;
 
     @Override
@@ -29,16 +33,19 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
             return;
         }
 
+        // inflate the email text view
         editTextEmail = (EditText) findViewById(R.id.editTextEmail);
+        // inflate the user name text view
         editTextUsername = (EditText) findViewById(R.id.editTextUsername);
+        // inflate the password text view
         editTextPassword = (EditText) findViewById(R.id.editTextPassword);
-
+        // inflate the login text view
         textViewLogin = (TextView) findViewById(R.id.textViewLogin);
-
+        // inflate the register button
         buttonRegister = (Button) findViewById(R.id.buttonRegister);
-
+        // declare the progress dialog
         progressDialog = new ProgressDialog(this);
-
+        // declare listeners for the register button and login text view
         buttonRegister.setOnClickListener(this);
         textViewLogin.setOnClickListener(this);
     }
@@ -49,6 +56,9 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
         final String password = editTextPassword.getText().toString().trim();
 
         //todo implement based on victor's server
+
+        Retrofit retrofit = new
+
 
         /*progressDialog.setMessage("Registering user...");
         progressDialog.show();

@@ -24,43 +24,56 @@ import java.util.ArrayList;
 public class ContactPage extends AppCompatActivity {
 
     Context context = this;
+    // field for full name text
+    private TextView fullName;
+    // field for the person's full name
+    private EditText name;
+    // field for email address text
+    private TextView emailAdd;
+    // field for the person's email
+    private EditText email;
+    // field for the message label
+    private TextView messageLabel;
+    // field for the person's message
+    private EditText message;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        // declare a linear layout for the page with a vertical (portrait) orientation
         LinearLayout linearLayout = new LinearLayout(getApplicationContext());
         linearLayout.setOrientation(LinearLayout.VERTICAL);
 
-        // NEED TO BASICALLY PAD THE TEXTVIEWS
-
-        // TEXTVIEW FOR THE WELCOMING MESSAGE
-        // textview welcoming them to the contact page
+        // TextView welcoming them to the contact page
         TextView contactInfo = new TextView(this);
 
-        // set the text for the textview
+        // set the text for the TextView
         contactInfo.setText(R.string.welcome_contact_message);
 
-        // add the textview to the layout
+        // add the TextView to the layout
         linearLayout.addView(contactInfo);
 
-        // TEXTVIEW AND EDITEXT FOR THE NAME
-        final TextView fullName = new TextView(this);
-        final EditText name = new EditText(this);
+        // TextView and EditText for the full name
+        fullName = new TextView(this);
+        name = new EditText(this);
 
+        // set the label for the name field
         fullName.setText(R.string.name_label);
+        // add a hint to the name field
         name.setHint(R.string.full_name);
 
+        // add the TextView and EditText to the layout so that they display
         linearLayout.addView(fullName);
         linearLayout.addView(name);
 
-        // radiobutton for the nature of the email
+        // RadioButton for the nature of the email
         final TextView natureLabel = new TextView(this);
         natureLabel.setText(R.string.nature);
-        // add the textview to the layout
+        // add the TextView to the layout
         linearLayout.addView(natureLabel);
 
-        // array to populate the spinner
+        // array to populate the spinner for the nature of the email
         ArrayList<String> natureOptions = new ArrayList<String>();
         natureOptions.add("Complaint");
         natureOptions.add("Compliment");
@@ -73,52 +86,60 @@ public class ContactPage extends AppCompatActivity {
         // add the spinner to the layout
         linearLayout.addView(natureOfEmail);
 
-        // TEXTVIEW AND EDITTEXT FOR THE EMAIL
-        final TextView emailAdd = new TextView(this);
-        final EditText email = new EditText(this);
+        // TextView and EditText for the email
+        emailAdd = new TextView(this);
+        email = new EditText(this);
 
+        // set the text for the email label and hint
         emailAdd.setText(R.string.email_label);
         email.setHint(R.string.email);
 
+        // add the email label and field to the layout
         linearLayout.addView(emailAdd);
         linearLayout.addView(email);
 
+        // TextView and EditText for the message
+        messageLabel = new TextView(this);
+        message = new EditText(this);
 
-        // TEXTVIEW AND EDITTEXT FOR THE MESSAGE
-        final TextView messageLabel = new TextView(this);
-        final EditText message = new EditText(this);
-
+        // set the text for the message label and hint
         messageLabel.setText(R.string.message_label);
         message.setHint(R.string.message);
 
+        // add the message label and field to the layout
         linearLayout.addView(messageLabel);
         linearLayout.addView(message);
 
-        // BUTTON TO SEND
+        // declare the send button and add text to it
         Button sendButton = new Button(this);
         sendButton.setText(R.string.send_button);
 
+        // add the send button to the layout
         linearLayout.addView(sendButton);
 
 
-        // THIS SEEMS TO WORK - BUT I NEED TO SOURCE IT - http://tekeye.biz/2012/email-contact-form-in-app
+        // SRC: http://tekeye.biz/2012/email-contact-form-in-app
 
         sendButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                // convert the text entered into the fields into a string
                 String nameOfPerson = name.getText().toString();
+                // declare the email receiving the email being sent by the user
                 String recipient = "rc00389@surrey.ac.uk";
                 String emailOfPerson = email.getText().toString();
                 String messageOfPerson = message.getText().toString();
                 String emailNature = natureOfEmail.getSelectedItem().toString();
 
+                // start a new intent when the send mail button is clicked
+                // the user can select which application will send the email
                 Intent sendMail = new Intent(Intent.ACTION_SEND);
 
-                // put this in a method
+                // put the text retrieved from the fields into the relevant places in an email
                 sendMail.putExtra(Intent.EXTRA_EMAIL, new String[]{recipient});
                 sendMail.putExtra(Intent.EXTRA_SUBJECT, emailNature);
+                // write the body of the email
                 sendMail.putExtra(Intent.EXTRA_TEXT, "Dear Valram, \n \n" + messageOfPerson + "\n \n Kind Regards,\n" + nameOfPerson + "\n" + emailOfPerson);
-
 
                 // forces the app to open a mail app in order to send the email - I THINK
                 // changes it from plain text, to getting the values from the field - I THINK
@@ -129,6 +150,7 @@ public class ContactPage extends AppCompatActivity {
                 } catch (android.content.ActivityNotFoundException a) {
                     // display a pop up window to the user telling them that there is not an app that they can use
                     AlertDialog.Builder confirmation = new AlertDialog.Builder(context);
+                    // if no app to send the email with is found, print a message telling the user
                     confirmation.setMessage(R.string.alert_message);
                     confirmation.setCancelable(true);
                     confirmation.setPositiveButton(R.string.okay_button, new DialogInterface.OnClickListener() {
@@ -144,13 +166,7 @@ public class ContactPage extends AppCompatActivity {
             }
         });
 
-
         setContentView(linearLayout);
-
     }
-
-
-
-
 
 }

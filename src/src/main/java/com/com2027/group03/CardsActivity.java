@@ -1,10 +1,19 @@
 package com.com2027.group03;
 
+import android.app.AlertDialog;
+import android.app.Dialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.MotionEvent;
+import android.view.View;
+import android.widget.Button;
+import android.widget.RadioButton;
+import android.widget.TextView;
+import android.widget.Toast;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.TimerTask;
@@ -12,7 +21,6 @@ import java.util.Timer;
 
 import java.util.Random;
 import java.util.concurrent.atomic.AtomicBoolean;
-import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * Created by Matus on 12-Mar-17.
@@ -52,6 +60,13 @@ public class CardsActivity extends OpenGLActivity {
     private int startDelay = 0;
     private AtomicBoolean showTimer = new AtomicBoolean(false);
     private static final String TAG = "CardsActivity";
+    private long startTime = System.currentTimeMillis();
+    private int difficulty = 0;
+    private int cardMatchCounter = 0;
+    private List<String> pickedCardTypes = new ArrayList<String>();
+    private List<Boolean> nbackAnswers = new ArrayList<Boolean>();
+    private final String[] cardTypes = {"Chair","Sofa", "Rose","Sunflower", "Modern car", "Old car", "Shell", "Fossil", "Crow", "Seagull", "Green tree", "Yellow tree", "Elder leaf", "Chestnut leaf",
+            "Strawberry", "Peach", "Plant", "Plant", "Snowy peak", "Mountain", "Notebook", "Book", "Spoon", "Fork", "Pencil", "Pen"};
 
     // The padding from the border of the screen
     // In percentages!
@@ -243,7 +258,7 @@ public class CardsActivity extends OpenGLActivity {
 
                 // Get a random next available space and put the same card
                 // over there to create a pair
-                // Best case scenatio complexity O(1)
+                // Best case scenario complexity O(1)
                 // Worst case scenario complexity O(infinity)
                 while(true){
 
@@ -269,7 +284,7 @@ public class CardsActivity extends OpenGLActivity {
         disableTouch.set(true);
         showTimer.set(true);
 
-        Log.d(TAG, "Hidding all cards in " + startDelay + " ms");
+        Log.d(TAG, "Hiding all cards in " + startDelay + " ms");
 
         new Timer().schedule(new TimerTask() {
             @Override
@@ -318,10 +333,22 @@ public class CardsActivity extends OpenGLActivity {
                 int seconds = (int)(totalTimeTook / 1000);
 
                 int stage = cardsRenderer.getNumOfCards().x;
-                int stageCounter = 1; //????!!!!
-                int difficulty = 1; //????!!!!
-
-                int score = Math.max((difficulty * 10) * (stage * stageCounter * 2) - (seconds / 2), 0);
+                int stageCounter = (cardsRenderer.getNumOfCards().x)/2;
+                int answerCounter=0;
+                int answerMultiplier=1;
+                int answerScore;
+                for (int i = 0;i<nbackAnswers.size();i++){
+                    if(nbackAnswers.get(i) == true){
+                        answerCounter+=1;
+                        if (i+1 < nbackAnswers.size()){
+                            if (nbackAnswers.get(i+1) == true){
+                                answerMultiplier +=1;
+                            }
+                        }
+                    }
+                }
+                answerScore = ((answerCounter*10)*answerMultiplier)*difficulty;
+                int score = Math.max((difficulty * 10) * (stage * stageCounter * 2) - (seconds / 2) + answerScore, 0);
 
                 Log.d(TAG, "Total time took: " + seconds + " seconds!");
                 scoreText = new Text(
@@ -392,13 +419,88 @@ public class CardsActivity extends OpenGLActivity {
 
                     // Apply rules
                     if (pickedCards.size() == 2) {
-                        PickedCard a = pickedCards.get(0);
+                        final PickedCard a = pickedCards.get(0);
                         PickedCard b = pickedCards.get(1);
 
                         // Are they same cards?
                         if (a.card == b.card) {
+                            cardMatchCounter += 1;
                             Log.d(TAG, "Same cards!");
                             disableTouch.set(true);
+                            pickedCardTypes.add(a.card.getName());
+
+                            ///LUKAS
+                            ///
+                            ///
+                            ///
+                            ///
+                            ///
+                            ///
+                            Log.d(TAG, "PickedCardTypes"+ pickedCardTypes.size());
+                            Log.d(TAG, "cardMatchCounter"+ cardMatchCounter);
+                            if (difficulty != 0 && difficulty <= cardMatchCounter ) {
+                                if ((pickedCardTypes.size() - difficulty) >= 0) {
+                                    final Dialog dialog = new Dialog(CardsActivity.this);
+                                    dialog.setContentView(R.layout.nback_dialog);
+                                    dialog.setTitle("This is my custom dialog box");
+                                    dialog.setCancelable(false);
+                                    // there are a lot of settings, for dialog, check them all out!
+                                    // set up radiobutton
+                                    final TextView tv1 = (TextView) dialog.findViewById(R.id.nbacktext);
+                                    final RadioButton rd1 = (RadioButton) dialog.findViewById(R.id.rd_1);
+                                    final RadioButton rd2 = (RadioButton) dialog.findViewById(R.id.rd_2);
+                                    final RadioButton rd3 = (RadioButton) dialog.findViewById(R.id.rd_3);
+                                    final Button b1 = (Button) dialog.findViewById(R.id.dialogbutton);
+                                    final RadioButton[] rBs = {rd1,rd2,rd3};
+                                    rd1.setText(nBack()[0]);
+                                    rd2.setText(nBack()[1]);
+                                    rd3.setText(nBack()[2]);
+                                    tv1.setText("Choose a card you matched " + difficulty + " turn ago:");
+                                    b1.setOnClickListener(new View.OnClickListener(){
+                                        @Override
+                                        public void onClick(View v){
+                                            Boolean buttonStatus = false;
+                                            for(int i = 0; i < rBs.length;i++){
+                                                if (rBs[i].isChecked() && rBs[i].getText().equals(pickedCardTypes.get(pickedCardTypes.size() - difficulty)))
+                                                {
+                                                    Log.d("tag","Correct");
+                                                    buttonStatus = true;
+                                                    nbackAnswers.add(true);
+
+
+                                                }
+                                                else if (rBs[i].isChecked() && !(rBs[i].getText().equals(pickedCardTypes.get(pickedCardTypes.size() - difficulty)))){
+                                                    Log.d("tag","Incorrect");
+                                                    buttonStatus = false;
+                                                    nbackAnswers.add(false);
+                                                }
+                                                else {
+                                                    Log.d("tag","Not picked");
+                                                }
+                                            }
+                                            dialog.dismiss();
+                                            AlertDialog.Builder builder = new AlertDialog.Builder(CardsActivity.this);//Context parameter
+                                            builder.setNeutralButton("OK", new DialogInterface.OnClickListener() {
+                                                @Override
+                                                public void onClick(DialogInterface dialog, int which) {
+                                                    //do stuff
+                                                }
+                                            });
+                                            if (buttonStatus == true){
+                                                builder.setTitle("Correct!");
+                                            }
+                                            else {
+                                                builder.setTitle("Incorrect!");
+                                            }
+                                            AlertDialog alertDialog = builder.create();
+                                            alertDialog.show();
+                                        }
+                                    });
+
+                                    dialog.show();
+                                    cardMatchCounter = 0;
+                                }
+                            }
 
                             new Timer().schedule(new TimerTask() {
                                 @Override
@@ -406,12 +508,16 @@ public class CardsActivity extends OpenGLActivity {
                                     Log.d(TAG, "Removing selected cards...");
                                     PickedCard sa = pickedCards.get(0);
                                     PickedCard sb = pickedCards.get(1);
+                                    Log.d(TAG, "Test"+ pickedCardTypes.size());
                                     cardsRenderer.removeCard(sa.x, sa.y);
                                     cardsRenderer.removeCard(sb.x, sb.y);
                                     disableTouch.set(false);
                                     pickedCards.clear();
+
                                 }
                             }, 1000);
+
+
                         } else {
                             Log.d(TAG, "Not the same cards!");
                             disableTouch.set(true);
@@ -436,11 +542,56 @@ public class CardsActivity extends OpenGLActivity {
                 int x = (int)e.getX();
                 int y = (int)e.getY();
                 if(buttonNext.isTouched(x, y)){
+
+                    long endTime = System.currentTimeMillis();
+
+
+                    switch (difficulty){
+                        case 0:
+                            if (true){
+                                difficultyIncrease();
+                            }
+                            break;
+                        case 2:
+                            if (difficultyCheck(endTime)){
+                                difficultyIncrease();
+                            }
+                            break;
+                        case 3:
+                            if (difficultyCheck(endTime)){
+                                difficultyIncrease();
+                            }
+                            break;
+                        case 4:
+                            if (difficultyCheck(endTime)){
+                                difficultyIncrease();
+                            }
+                            break;
+                        case 5:
+                            if (difficultyCheck(endTime)){
+                                difficultyIncrease();
+                            }
+                            break;
+                        case 6:
+                            if (difficultyCheck(endTime)){
+                                difficultyIncrease();
+                            }
+                            break;
+                        default:
+                            Log.i("Time counter","Default case");
+                    }
+
+
+
                     // Launch next level
                     constructLevel(
                             cardsRenderer.getNumOfCards().x +1,
                             getIntent().getIntExtra("initialShowDelay", 2000)
+
                     );
+                    cardMatchCounter = 0;
+                    startTime = System.currentTimeMillis();
+                    pickedCardTypes.clear();
                 }
                 if(buttonRepeat.isTouched(x, y)){
                     // Repeat current level
@@ -491,5 +642,64 @@ public class CardsActivity extends OpenGLActivity {
         //bundle.putBooleanArray("visible", visible);
     }
 
+    private String[] nBack() {
+        String[] temp = {pickedCardTypes.get(pickedCardTypes.size() - difficulty),cardTypes[new Random().nextInt(cardTypes.length)],cardTypes[new Random().nextInt(cardTypes.length)]};
+        return temp;
+    }
+    private int answerCounterCheck(){
+        int temp = 0;
+        for (int i = 0;i<nbackAnswers.size();i++){
+            if (nbackAnswers.get(i) == true){
+                temp += 1;
+            }
+        }
+        return temp;
+    }
+    private boolean timeCheck(long endTime, int cardNum){
+        long timeTaken = (endTime-startTime)/1000; //time in seconds
+        if (timeTaken < (cardNum*10)){
+            return true;
+        }
+        else {
+            return false;
+        }
+    }
+    private boolean difficultyCheck(long endTime){
+        boolean temporary = true;
+        if (nbackAnswers.size() !=0){
+            if ((float)(answerCounterCheck()/nbackAnswers.size()*100)>50){
+                switch (cardsRenderer.getNumOfCards().x){
+                    case 3:
+                        temporary= timeCheck(endTime, 3);
+                        break;
+                    case 4:
+                        temporary= timeCheck(endTime, 4);
+                        break;
+                    case 5:
+                        temporary= timeCheck(endTime, 5);
+                        break;
+                    case 6:
+                        temporary= timeCheck(endTime, 6);
+                        break;
+                    default:
+                    Log.i("Diff check", "default");
+                        temporary= false;
+                }
+
+            }
+        }
+        return temporary;
+    }
+    private void difficultyIncrease(){
+        if (!(difficulty+1 > cardsRenderer.getNumOfCards().x+cardsRenderer.getNumOfCards().y)){
+            if (difficulty == 0){
+                difficulty += 2;
+            }
+            else {
+                difficulty +=1;
+            }
+        }
+
+    }
 
 }
