@@ -9,6 +9,9 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
+import retrofit2.Call;
+import retrofit2.Callback;
+
 public class RegisterActivity extends AppCompatActivity implements View.OnClickListener {
 
     // fields to edit the user name, email and password
@@ -53,6 +56,9 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
         final String password = editTextPassword.getText().toString().trim();
 
         //todo implement based on victor's server
+
+        Retrofit retrofit = new
+
 
         /*progressDialog.setMessage("Registering user...");
         progressDialog.show();
