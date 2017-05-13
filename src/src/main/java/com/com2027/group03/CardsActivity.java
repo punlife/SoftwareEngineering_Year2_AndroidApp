@@ -7,7 +7,11 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.MotionEvent;
+import android.view.View;
+import android.widget.Button;
 import android.widget.RadioButton;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import java.lang.reflect.Array;
 import java.util.ArrayList;
@@ -56,9 +60,10 @@ public class CardsActivity extends OpenGLActivity {
     private int startDelay = 0;
     private AtomicBoolean showTimer = new AtomicBoolean(false);
     private static final String TAG = "CardsActivity";
-    private int difficulty = 1;
+    private int difficulty = 2;
     private int cardMatchCounter = 0;
     private List<String> pickedCardTypes = new ArrayList<String>();
+    private List<Boolean> nbackAnswers = new ArrayList<Boolean>();
     private final String[] cardTypes = {"Chair","Sofa", "Rose","Sunflower", "Modern car", "Old car", "Shell", "Fossil", "Crow", "Seagull", "Green tree", "Yellow tree", "Elder leaf", "Chestnut leaf",
             "Strawberry", "Peach", "Plant", "Plant", "Snowy peak", "Mountain", "Notebook", "Book", "Spoon", "Fork", "Pencil", "Pen"};
 
@@ -241,7 +246,7 @@ public class CardsActivity extends OpenGLActivity {
 
                     // Check if this type of card is already in the grid
                     // If yes, pick one randomly again
-                    //if(listOfCards.contains(index))continue;
+                    if(listOfCards.contains(index))continue;
                     break;
                 }
 
@@ -401,13 +406,86 @@ public class CardsActivity extends OpenGLActivity {
 
                     // Apply rules
                     if (pickedCards.size() == 2) {
-                        PickedCard a = pickedCards.get(0);
+                        final PickedCard a = pickedCards.get(0);
                         PickedCard b = pickedCards.get(1);
 
                         // Are they same cards?
                         if (a.card == b.card) {
+                            cardMatchCounter += 1;
                             Log.d(TAG, "Same cards!");
                             disableTouch.set(true);
+                            pickedCardTypes.add(a.card.getName());
+
+                            ///LUKAS
+                            ///
+                            ///
+                            ///
+                            ///
+                            ///
+                            ///
+                            Log.d(TAG, "PickedCardTypes"+ pickedCardTypes.size());
+                            Log.d(TAG, "cardMatchCounter"+ cardMatchCounter);
+                            if (difficulty != 0 && difficulty <= cardMatchCounter ) {
+                                if ((pickedCardTypes.size() - difficulty) >= 0) {
+                                    final Dialog dialog = new Dialog(CardsActivity.this);
+                                    dialog.setContentView(R.layout.nback_dialog);
+                                    dialog.setTitle("This is my custom dialog box");
+                                    dialog.setCancelable(false);
+                                    // there are a lot of settings, for dialog, check them all out!
+                                    // set up radiobutton
+                                    final TextView tv1 = (TextView) dialog.findViewById(R.id.nbacktext);
+                                    final RadioButton rd1 = (RadioButton) dialog.findViewById(R.id.rd_1);
+                                    final RadioButton rd2 = (RadioButton) dialog.findViewById(R.id.rd_2);
+                                    final RadioButton rd3 = (RadioButton) dialog.findViewById(R.id.rd_3);
+                                    final Button b1 = (Button) dialog.findViewById(R.id.dialogbutton);
+                                    final RadioButton[] rBs = {rd1,rd2,rd3};
+                                    rd1.setText(nBack()[0]);
+                                    rd2.setText(nBack()[1]);
+                                    rd3.setText(nBack()[2]);
+                                    tv1.setText("Choose a card you matched " + difficulty + " turn ago:");
+                                    b1.setOnClickListener(new View.OnClickListener(){
+                                        @Override
+                                        public void onClick(View v){
+                                            Boolean buttonStatus = false;
+                                            for(int i = 0; i < rBs.length;i++){
+                                                if (rBs[i].isChecked() && rBs[i].getText().equals(pickedCardTypes.get(pickedCardTypes.size() - difficulty)))
+                                                {
+                                                    Log.d("tag","Correct");
+                                                    buttonStatus = true;
+
+
+                                                }
+                                                else if (rBs[i].isChecked() && !(rBs[i].getText().equals(pickedCardTypes.get(pickedCardTypes.size() - difficulty)))){
+                                                    Log.d("tag","Incorrect");
+                                                    buttonStatus = false;
+                                                }
+                                                else {
+                                                    Log.d("tag","Not picked");
+                                                }
+                                            }
+                                            dialog.dismiss();
+                                            AlertDialog.Builder builder = new AlertDialog.Builder(CardsActivity.this);//Context parameter
+                                            builder.setNeutralButton("OK", new DialogInterface.OnClickListener() {
+                                                @Override
+                                                public void onClick(DialogInterface dialog, int which) {
+                                                    //do stuff
+                                                }
+                                            });
+                                            if (buttonStatus == true){
+                                                builder.setTitle("Correct!");
+                                            }
+                                            else {
+                                                builder.setTitle("Incorrect!");
+                                            }
+                                            AlertDialog alertDialog = builder.create();
+                                            alertDialog.show();
+                                        }
+                                    });
+
+                                    dialog.show();
+                                    cardMatchCounter = 0;
+                                }
+                            }
 
                             new Timer().schedule(new TimerTask() {
                                 @Override
@@ -415,16 +493,17 @@ public class CardsActivity extends OpenGLActivity {
                                     Log.d(TAG, "Removing selected cards...");
                                     PickedCard sa = pickedCards.get(0);
                                     PickedCard sb = pickedCards.get(1);
-                                    pickedCardTypes.add(sa.card.getName());
-                                    Log.d(TAG, "Removing selected cards..."+ pickedCardTypes.size()+ pickedCardTypes.get(pickedCardTypes.size()-1));
-
+                                    Log.d(TAG, "Test"+ pickedCardTypes.size());
                                     cardsRenderer.removeCard(sa.x, sa.y);
                                     cardsRenderer.removeCard(sb.x, sb.y);
                                     disableTouch.set(false);
                                     pickedCards.clear();
+
                                 }
                             }, 1000);
-                        nBack();} else {
+
+
+                        } else {
                             Log.d(TAG, "Not the same cards!");
                             disableTouch.set(true);
 
@@ -452,7 +531,10 @@ public class CardsActivity extends OpenGLActivity {
                     constructLevel(
                             cardsRenderer.getNumOfCards().x +1,
                             getIntent().getIntExtra("initialShowDelay", 2000)
+
                     );
+                    cardMatchCounter = 0;
+                    pickedCardTypes.clear();
                 }
                 if(buttonRepeat.isTouched(x, y)){
                     // Repeat current level
@@ -587,54 +669,8 @@ public class CardsActivity extends OpenGLActivity {
         }
         return stype;
     }
-    private void nBack(){
-        cardMatchCounter +=1;
-        ///MY SPACE FAM
-        ///RESERVED INIT
-        /// -L
-        ///
-        ///
-        ///
-        ///
-        ///
-        ///
-        ///
-        ///
-        ///
-        ///
-        ///
-        ///Lukas' n-back implementation
-        if (difficulty !=0 && difficulty == cardMatchCounter ) {
-            if (pickedCardTypes.size() - difficulty >= 0) {
-                String[] items = new String[3];
-                items[0] = pickedCardTypes.get(pickedCardTypes.size() - difficulty);
-                items[1] = cardTypes[new Random().nextInt(cardTypes.length)];
-                while (items[1] == items[0]) {
-                    items[1] = cardTypes[new Random().nextInt(cardTypes.length)];
-                }
-                while (items[2] == items[0] || items[2] == items[1]) {
-                    items[2] = cardTypes[new Random().nextInt(cardTypes.length)];
-                }
-                new AlertDialog.Builder(CardsActivity.this)
-                        .setTitle("Pick a card")
-                        .setMessage("Which card have you picked " + cardMatchCounter + " turns ago?")
-                        .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog, int which) {
-                                // continue with delete
-                            }
-                        })
-                        .setSingleChoiceItems(items, -1,
-                                new DialogInterface.OnClickListener() {
-                                    public void onClick(DialogInterface dialog, int item) {
-
-                                    }
-                                })
-                        .setIcon(android.R.drawable.ic_dialog_alert)
-                        .show();
-
-                cardMatchCounter = 0;
-            }
-        }
-
+    private String[] nBack() {
+        String[] temp = {pickedCardTypes.get(pickedCardTypes.size() - difficulty),cardTypes[new Random().nextInt(cardTypes.length)],cardTypes[new Random().nextInt(cardTypes.length)]};
+        return temp;
     }
 }
