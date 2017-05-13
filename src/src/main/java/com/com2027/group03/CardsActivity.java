@@ -60,7 +60,8 @@ public class CardsActivity extends OpenGLActivity {
     private int startDelay = 0;
     private AtomicBoolean showTimer = new AtomicBoolean(false);
     private static final String TAG = "CardsActivity";
-    private int difficulty = 2;
+    private long startTime = System.currentTimeMillis();
+    private int difficulty = 0;
     private int cardMatchCounter = 0;
     private List<String> pickedCardTypes = new ArrayList<String>();
     private List<Boolean> nbackAnswers = new ArrayList<Boolean>();
@@ -332,10 +333,22 @@ public class CardsActivity extends OpenGLActivity {
                 int seconds = (int)(totalTimeTook / 1000);
 
                 int stage = cardsRenderer.getNumOfCards().x;
-                int stageCounter = 1; //????!!!!
-                int difficulty = 1; //????!!!!
-
-                int score = Math.max((difficulty * 10) * (stage * stageCounter * 2) - (seconds / 2), 0);
+                int stageCounter = (cardsRenderer.getNumOfCards().x)/2;
+                int answerCounter=0;
+                int answerMultiplier=1;
+                int answerScore;
+                for (int i = 0;i<nbackAnswers.size();i++){
+                    if(nbackAnswers.get(i) == true){
+                        answerCounter+=1;
+                        if (i+1 < nbackAnswers.size()){
+                            if (nbackAnswers.get(i+1) == true){
+                                answerMultiplier +=1;
+                            }
+                        }
+                    }
+                }
+                answerScore = ((answerCounter*10)*answerMultiplier)*difficulty;
+                int score = Math.max((difficulty * 10) * (stage * stageCounter * 2) - (seconds / 2) + answerScore, 0);
 
                 Log.d(TAG, "Total time took: " + seconds + " seconds!");
                 scoreText = new Text(
@@ -452,12 +465,14 @@ public class CardsActivity extends OpenGLActivity {
                                                 {
                                                     Log.d("tag","Correct");
                                                     buttonStatus = true;
+                                                    nbackAnswers.add(true);
 
 
                                                 }
                                                 else if (rBs[i].isChecked() && !(rBs[i].getText().equals(pickedCardTypes.get(pickedCardTypes.size() - difficulty)))){
                                                     Log.d("tag","Incorrect");
                                                     buttonStatus = false;
+                                                    nbackAnswers.add(false);
                                                 }
                                                 else {
                                                     Log.d("tag","Not picked");
@@ -527,6 +542,47 @@ public class CardsActivity extends OpenGLActivity {
                 int x = (int)e.getX();
                 int y = (int)e.getY();
                 if(buttonNext.isTouched(x, y)){
+
+                    long endTime = System.currentTimeMillis();
+
+
+                    switch (difficulty){
+                        case 0:
+                            if (true){
+                                difficultyIncrease();
+                            }
+                            break;
+                        case 2:
+                            if (difficultyCheck(endTime)){
+                                difficultyIncrease();
+                            }
+                            break;
+                        case 3:
+                            if (difficultyCheck(endTime)){
+                                difficultyIncrease();
+                            }
+                            break;
+                        case 4:
+                            if (difficultyCheck(endTime)){
+                                difficultyIncrease();
+                            }
+                            break;
+                        case 5:
+                            if (difficultyCheck(endTime)){
+                                difficultyIncrease();
+                            }
+                            break;
+                        case 6:
+                            if (difficultyCheck(endTime)){
+                                difficultyIncrease();
+                            }
+                            break;
+                        default:
+                            Log.i("Time counter","Default case");
+                    }
+
+
+
                     // Launch next level
                     constructLevel(
                             cardsRenderer.getNumOfCards().x +1,
@@ -534,6 +590,7 @@ public class CardsActivity extends OpenGLActivity {
 
                     );
                     cardMatchCounter = 0;
+                    startTime = System.currentTimeMillis();
                     pickedCardTypes.clear();
                 }
                 if(buttonRepeat.isTouched(x, y)){
@@ -585,92 +642,64 @@ public class CardsActivity extends OpenGLActivity {
         //bundle.putBooleanArray("visible", visible);
     }
 
-    private String findCardType(String type){
-        String stype = "default";
-        
-        switch (type){
-            case "Chair":
-                stype = "Chair";
-                break;
-            case "Sofa":
-                stype ="Sofa";
-                break;
-            case "Rose":
-                stype ="Rose";
-                break;
-            case "Sunflower":
-                stype = "Sunflower";
-                break;
-            case "Modern car":
-                stype = "Modern car";
-                break;
-            case "Old car":
-                stype = "Old car";
-                break;
-            case "Shell":
-                stype ="Shell";
-                break;
-            case "Fossil":
-                stype ="Fossil";
-                break;
-            case "Crow":
-                stype = "Crow";
-                break;
-            case "Seagull":
-                stype = "Seagull";
-                break;
-            case "Green tree":
-                stype = "Green tree";
-                break;
-            case "Yellow tree":
-                stype = "Yellow tree";
-                break;
-            case "Elder leaf":
-                stype = "Sunflower";
-                break;
-            case "Chestnut leaf":
-                stype = "Elder leaf";
-                break;
-            case "Strawberry":
-                stype = "Chestnut leaf";
-                break;
-            case "Peach":
-                stype = "Peach";
-                break;
-            case "Plant":
-                stype = "Plant";
-                break;
-            case "Snowy peak":
-                stype = "Snowy peak";
-                break;
-            case "Mountain":
-                stype = "Mountain";
-                break;
-            case "Notebook":
-                stype = "Notebook";
-                break;
-            case "Book":
-                stype = "Book";
-                break;
-            case "Spoon":
-                stype = "Spoon";
-                break;
-            case "Fork":
-                stype = "Fork";
-                break;
-            case "Pencil":
-                stype = "Pencil";
-                break;
-            case "Pen":
-                stype = "Pen";
-                break;
-            default:
-                break;
-        }
-        return stype;
-    }
     private String[] nBack() {
         String[] temp = {pickedCardTypes.get(pickedCardTypes.size() - difficulty),cardTypes[new Random().nextInt(cardTypes.length)],cardTypes[new Random().nextInt(cardTypes.length)]};
         return temp;
     }
+    private int answerCounterCheck(){
+        int temp = 0;
+        for (int i = 0;i<nbackAnswers.size();i++){
+            if (nbackAnswers.get(i) == true){
+                temp += 1;
+            }
+        }
+        return temp;
+    }
+    private boolean timeCheck(long endTime, int cardNum){
+        long timeTaken = (endTime-startTime)/1000; //time in seconds
+        if (timeTaken < (cardNum*10)){
+            return true;
+        }
+        else {
+            return false;
+        }
+    }
+    private boolean difficultyCheck(long endTime){
+        boolean temporary = true;
+        if (nbackAnswers.size() !=0){
+            if ((float)(answerCounterCheck()/nbackAnswers.size()*100)>50){
+                switch (cardsRenderer.getNumOfCards().x){
+                    case 3:
+                        temporary= timeCheck(endTime, 3);
+                        break;
+                    case 4:
+                        temporary= timeCheck(endTime, 4);
+                        break;
+                    case 5:
+                        temporary= timeCheck(endTime, 5);
+                        break;
+                    case 6:
+                        temporary= timeCheck(endTime, 6);
+                        break;
+                    default:
+                    Log.i("Diff check", "default");
+                        temporary= false;
+                }
+
+            }
+        }
+        return temporary;
+    }
+    private void difficultyIncrease(){
+        if (!(difficulty+1 > cardsRenderer.getNumOfCards().x+cardsRenderer.getNumOfCards().y)){
+            if (difficulty == 0){
+                difficulty += 2;
+            }
+            else {
+                difficulty +=1;
+            }
+        }
+
+    }
+
 }
