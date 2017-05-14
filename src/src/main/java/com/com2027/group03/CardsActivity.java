@@ -90,7 +90,7 @@ public class CardsActivity extends OpenGLActivity {
         scoreFont = new OpenGLFont();
 
         try {
-            backgroundTexture.load(getBaseContext(), R.drawable.cards_background);
+            backgroundTexture.load(getBaseContext(), R.drawable.gamebackground);
             numbersTexture.load(getBaseContext(), R.drawable.numbers);
             goTexture.load(getBaseContext(), R.drawable.go);
             buttonRepeatTexture.load(getBaseContext(), R.drawable.button_repeat);
