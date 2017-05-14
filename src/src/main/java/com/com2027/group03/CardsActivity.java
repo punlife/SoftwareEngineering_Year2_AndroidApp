@@ -16,6 +16,7 @@ import android.widget.TextView;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.OutputStreamWriter;
 import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.List;
@@ -354,22 +355,30 @@ public class CardsActivity extends OpenGLActivity {
                 int score = Math.max((difficulty * 10) * (stage * stageCounter * 2) - (seconds / 2) + answerScore, 0);
 
                 //Lukas
-                String filename = "highscores.txt";
-                String string = "player,"+score;
-                FileOutputStream outputStream;
-                File file = new File(getFilesDir()+"/filename.txt");
+                String filename = "highscores";
+                String string = "player1,"+score+ System.lineSeparator();
+
+                File file = new File(getFilesDir(),filename);
+
+
                 if(file.exists()){
                     try {
-                        outputStream = openFileOutput(filename, Context.MODE_PRIVATE);
-                        outputStream.write(string.getBytes());
-                        outputStream.close();
+                        FileOutputStream fos=new FileOutputStream(file,true);
+                        fos.write(string.getBytes());
+                        Log.i("File:",file.toString());
+                        fos.close();
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
                 }
                 else{
-                    file.mkdir();
                     try {
+                        file.createNewFile();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                    try {
+                        FileOutputStream outputStream;
                         outputStream = openFileOutput(filename, Context.MODE_PRIVATE);
                         outputStream.write(string.getBytes());
                         outputStream.close();
@@ -461,20 +470,13 @@ public class CardsActivity extends OpenGLActivity {
                             disableTouch.set(true);
                             pickedCardTypes.add(a.card.getName());
 
-                            ///LUKAS
-                            ///
-                            ///
-                            ///
-                            ///
-                            ///
-                            ///
                             Log.d(TAG, "PickedCardTypes"+ pickedCardTypes.size());
                             Log.d(TAG, "cardMatchCounter"+ cardMatchCounter);
                             if (difficulty != 0 && difficulty <= cardMatchCounter ) {
                                 if ((pickedCardTypes.size() - difficulty) >= 0) {
                                     final Dialog dialog = new Dialog(CardsActivity.this);
                                     dialog.setContentView(R.layout.nback_dialog);
-                                    dialog.setTitle("This is my custom dialog box");
+                                    dialog.setTitle("Pick a card");
                                     dialog.setCancelable(false);
                                     final TextView tv1 = (TextView) dialog.findViewById(R.id.nbacktext);
                                     final RadioButton rd1 = (RadioButton) dialog.findViewById(R.id.rd_1);
@@ -485,7 +487,7 @@ public class CardsActivity extends OpenGLActivity {
                                     rd1.setText(nBack()[0]);
                                     rd2.setText(nBack()[1]);
                                     rd3.setText(nBack()[2]);
-                                    tv1.setText("Choose a card you matched " + difficulty + " turn ago:");
+                                    tv1.setText("Choose a card you matched " + difficulty + " turns ago:");
                                     b1.setOnClickListener(new View.OnClickListener(){
                                         @Override
                                         public void onClick(View v){

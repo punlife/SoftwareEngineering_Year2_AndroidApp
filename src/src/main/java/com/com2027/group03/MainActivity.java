@@ -34,6 +34,7 @@ public class MainActivity extends AppCompatActivity {
         ActionBar actionBar = getSupportActionBar();
         actionBar.hide();
 
+
         //Intent intent = new Intent(this, TestSpritesActivity.class);
         //startActivity(intent);
 
@@ -74,53 +75,77 @@ public class MainActivity extends AppCompatActivity {
         //Button to show High scores.
         Button highscore_b = (Button) findViewById(R.id.highScore_button);
         final List<String> test = new ArrayList<String>();
-        test.add("String");
-        final ArrayAdapter<String> adapter = new HighScoreAdapter(MainActivity.this, readHighscoresFromFile());
-        highscore_b.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                AlertDialog.Builder builder = new AlertDialog.Builder(view.getContext());
-                LayoutInflater inflater = LayoutInflater.from(MainActivity.this);
-                View v = inflater.inflate(R.layout.highscore_dialog, null);
-                builder.setView(v)
-                        .setNeutralButton("OK", new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int id) {
+        test.add(" ");
+        File file = new File(getFilesDir(),"highscores");
+        final ArrayAdapter<String> adapter;
+        if (file.exists()) {
+            adapter = new HighScoreAdapter(MainActivity.this, readHighscoresFromFile());
+            highscore_b.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    AlertDialog.Builder builder = new AlertDialog.Builder(view.getContext());
+                    LayoutInflater inflater = LayoutInflater.from(MainActivity.this);
+                    View v = inflater.inflate(R.layout.highscore_dialog, null);
+                    builder.setView(v)
+                            .setNeutralButton("OK", new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int id) {
 
-                            }
-                        });
-                ListView lv = (ListView) v.findViewById(R.id.hslistview);
-                lv.setAdapter(adapter);
-                builder.create().show();
+                                }
+                            });
+                    ListView lv = (ListView) v.findViewById(R.id.hslistview);
+                    lv.setAdapter(adapter);
+                    builder.create().show();
 
+                }
+            });
+        } else {
+            if (file.exists()) {
+                highscore_b.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        AlertDialog.Builder builder = new AlertDialog.Builder(view.getContext());
+                        LayoutInflater inflater = LayoutInflater.from(MainActivity.this);
+                        View v = inflater.inflate(R.layout.highscore_dialog, null);
+                        builder.setView(v)
+                                .setNeutralButton("OK", new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialog, int id) {
+
+                                    }
+                                })
+                                .setMessage("No data present");
+                        builder.create().show();
+
+                    }
+                });
             }
-        });
+
+        }
     }
 
     private List<String> readHighscoresFromFile() {
         List<String> highscores = new ArrayList<String>();
-        File file = new File(getFilesDir() + "/highscores.txt");
-        FileInputStream fis = null;
+        File file = new File(getFilesDir(), "highscores");
         if (file.exists()) {
+            String line;
             try {
-                fis = new FileInputStream(file);
+                FileInputStream fis = new FileInputStream(file);
+                InputStreamReader isr = new InputStreamReader(fis);
+                BufferedReader br = new BufferedReader(isr);
+                try {
+                    while ((line = br.readLine()) != null) {
+                        highscores.add(line);
+                    }
+                    fis.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
             } catch (FileNotFoundException e) {
                 e.printStackTrace();
             }
-            InputStreamReader isr = new InputStreamReader(fis);
-            BufferedReader br = new BufferedReader(isr);
-            String line;
-
-
-            try {
-                while ((line = br.readLine()) != null) {
-                    highscores.add(line);
-                }
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-
         }
+
         return highscores;
     }
 }

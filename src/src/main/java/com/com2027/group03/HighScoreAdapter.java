@@ -27,12 +27,15 @@ public class HighScoreAdapter extends ArrayAdapter<String> {
 
     private final Context context;
     private final List<String> list;
+    private final List<List> temp;
 
     public HighScoreAdapter(Context context, List<String> list) {
         super(context, R.layout.highscorelist,list);
         this.context = context;
         this.list = list;
+        this.temp = prepareHighscores(sortMap(assignHighscores(list)));
     }
+
 
     static class ViewHolder {
         protected TextView name;
@@ -56,7 +59,7 @@ public class HighScoreAdapter extends ArrayAdapter<String> {
         } else {
             view = convertView;
         }
-        List<List> temp = prepareHighscores(sortMap(assignHighscores(list)));
+
         ViewHolder holder = (ViewHolder) view.getTag();
 
         holder.name.setText(temp.get(0).get(position).toString());
@@ -84,8 +87,14 @@ public class HighScoreAdapter extends ArrayAdapter<String> {
         List<String> names = new ArrayList<String>();
         List<String> scores = new ArrayList<String>();
         for ( Map.Entry<String, String> entry : hs.entrySet()) {
-            names.add(entry.getKey());
-            scores.add(entry.getValue());
+            if(!(names.contains(entry.getKey()))){
+                names.add(entry.getKey());
+                scores.add(entry.getValue());
+            }
+            else {
+                //Do nothing
+            }
+
         }
         hs.clear();
         temp.add(names);
