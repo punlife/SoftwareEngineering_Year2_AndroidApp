@@ -73,4 +73,7 @@ Individual weekly contribution - Matus Novak
 
 ## Week 11
 
+* Helped other group members deal with any Android Studio and Java issuess
+* Helped and fixed other group members' GIT problems such as merging with the newer remote reposiroty version
+
 ## Week 12
