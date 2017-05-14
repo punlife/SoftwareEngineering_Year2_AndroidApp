@@ -3,7 +3,7 @@
 ## Week 01
 
   - Took down minutes in our first meeting as a group
-  - Wrote those minutes in markdown and added it to the git repository
+  - Wrote those minutes in markdown and added it to the git repository with the message 
 
 ## Week 02
 
@@ -45,6 +45,8 @@
 ## Week 08
 
   - Continued working on the audit report
+  - Added the `ContactUs` page in the code
+  - Pushed the page to Git
   
 ## Week 09
 
@@ -56,6 +58,8 @@
 
   - Added comments to the code
   - Continued working on the SRS
+  - Added the team charter to the audit report
+  - Finished the audit report
 
 ## Week 11
 
