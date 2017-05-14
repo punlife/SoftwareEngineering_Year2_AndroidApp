@@ -57,7 +57,7 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
 
         //todo implement based on victor's server
 
-        Retrofit retrofit = new
+        //Retrofit retrofit = new
 
 
         /*progressDialog.setMessage("Registering user...");

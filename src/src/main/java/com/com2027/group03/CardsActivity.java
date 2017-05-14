@@ -2,6 +2,7 @@ package com.com2027.group03;
 
 import android.app.AlertDialog;
 import android.app.Dialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
@@ -11,19 +12,21 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.RadioButton;
 import android.widget.TextView;
-import android.widget.Toast;
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.TimerTask;
 import java.util.Timer;
-
 import java.util.Random;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
  * Created by Matus on 12-Mar-17.
+ * Updated by Lukas on 14-May-17.
  */
 public class CardsActivity extends OpenGLActivity {
     private CardsRenderer cardsRenderer;
@@ -350,6 +353,35 @@ public class CardsActivity extends OpenGLActivity {
                 answerScore = ((answerCounter*10)*answerMultiplier)*difficulty;
                 int score = Math.max((difficulty * 10) * (stage * stageCounter * 2) - (seconds / 2) + answerScore, 0);
 
+                //Lukas
+                String filename = "highscores.txt";
+                String string = "player,"+score;
+                FileOutputStream outputStream;
+                File file = new File(getFilesDir()+"/filename.txt");
+                if(file.exists()){
+                    try {
+                        outputStream = openFileOutput(filename, Context.MODE_PRIVATE);
+                        outputStream.write(string.getBytes());
+                        outputStream.close();
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                }
+                else{
+                    file.mkdir();
+                    try {
+                        outputStream = openFileOutput(filename, Context.MODE_PRIVATE);
+                        outputStream.write(string.getBytes());
+                        outputStream.close();
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                }
+
+
+
+
+
                 Log.d(TAG, "Total time took: " + seconds + " seconds!");
                 scoreText = new Text(
                         this.getWidth()/2, this.getHeight()/2,
@@ -444,8 +476,6 @@ public class CardsActivity extends OpenGLActivity {
                                     dialog.setContentView(R.layout.nback_dialog);
                                     dialog.setTitle("This is my custom dialog box");
                                     dialog.setCancelable(false);
-                                    // there are a lot of settings, for dialog, check them all out!
-                                    // set up radiobutton
                                     final TextView tv1 = (TextView) dialog.findViewById(R.id.nbacktext);
                                     final RadioButton rd1 = (RadioButton) dialog.findViewById(R.id.rd_1);
                                     final RadioButton rd2 = (RadioButton) dialog.findViewById(R.id.rd_2);
