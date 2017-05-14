@@ -333,7 +333,7 @@ public class CardsActivity extends OpenGLActivity {
                 int seconds = (int)(totalTimeTook / 1000);
 
                 int stage = cardsRenderer.getNumOfCards().x;
-                int stageCounter = (cardsRenderer.getNumOfCards().x)/2;
+                int stageCounter = (cardsRenderer.getNumOfCards().x+cardsRenderer.getNumOfCards().y)/2;
                 int answerCounter=0;
                 int answerMultiplier=1;
                 int answerScore;
