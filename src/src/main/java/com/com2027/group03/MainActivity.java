@@ -37,7 +37,7 @@ public class MainActivity extends AppCompatActivity {
 
         preferences = this.getSharedPreferences("Spark", Context.MODE_PRIVATE);
 
-        if (preferences.getBoolean("firstrun", true)) {
+        if (!preferences.getBoolean("firstrun", true)) {
 
             try {
                 InputStream inputStream = this.getAssets().open("Terms_Conditions.txt");
