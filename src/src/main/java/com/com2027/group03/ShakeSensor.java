@@ -12,7 +12,7 @@ import java.lang.Math;
 public class ShakeSensor implements SensorEventListener {
 
 
-        private static final float SHAKE_THRESHOLD_GRAVITY = 1.5F;
+        private static final float SHAKE_THRESHOLD_GRAVITY = 2.0F;
         private static final int SHAKE_SLOP_TIME_MS = 500;
         private static final int SHAKE_COUNT_RESET_TIME_MS = 3000;
 
@@ -54,7 +54,7 @@ public class ShakeSensor implements SensorEventListener {
                         return;
                     }
 
-                    // reset the shake count after 3 seconds of no shakes
+                    // reset shake counter after 3 seconds of no increment
                     if (mShakeTimestamp + SHAKE_COUNT_RESET_TIME_MS < now) {
                         mShakeCount = 0;
                     }

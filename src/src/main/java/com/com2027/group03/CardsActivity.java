@@ -493,9 +493,10 @@ public class CardsActivity extends OpenGLActivity {
                                     final RadioButton rd3 = (RadioButton) dialog.findViewById(R.id.rd_3);
                                     final Button b1 = (Button) dialog.findViewById(R.id.dialogbutton);
                                     final RadioButton[] rBs = {rd1,rd2,rd3};
-                                    rd1.setText(nBack()[0]);
-                                    rd2.setText(nBack()[1]);
-                                    rd3.setText(nBack()[2]);
+                                    String[] answers = answerShifter(nBack());
+                                    rd1.setText(answers[0]);
+                                    rd2.setText(answers[1]);
+                                    rd3.setText(answers[2]);
                                     tv1.setText("Choose a card you matched " + difficulty + " turns ago:");
                                     b1.setOnClickListener(new View.OnClickListener(){
                                         @Override
@@ -593,6 +594,11 @@ public class CardsActivity extends OpenGLActivity {
                                 difficultyIncrease();
                             }
                             break;
+                        case 1:
+                            if (true){
+                                difficultyIncrease();
+                            }
+                            break;
                         case 2:
                             if (difficultyCheck(endTime)){
                                 difficultyIncrease();
@@ -684,7 +690,16 @@ public class CardsActivity extends OpenGLActivity {
     }
 
     private String[] nBack() {
-        String[] temp = {pickedCardTypes.get(pickedCardTypes.size() - difficulty),cardTypes[new Random().nextInt(cardTypes.length)],cardTypes[new Random().nextInt(cardTypes.length)]};
+        String[] temp = new String[3];
+        temp[0]= pickedCardTypes.get(pickedCardTypes.size() - difficulty);
+        temp[1]= cardTypes[new Random().nextInt(cardTypes.length)];
+        temp[2]= cardTypes[new Random().nextInt(cardTypes.length)];
+        while (temp[1].equals(temp[0])){
+            temp[1]= cardTypes[new Random().nextInt(cardTypes.length)];
+        }
+        while (temp[2].equals(temp[0]) || temp[2].equals(temp[1]) ){
+            temp[2]= cardTypes[new Random().nextInt(cardTypes.length)];
+        }
         return temp;
     }
     private int answerCounterCheck(){
@@ -696,6 +711,12 @@ public class CardsActivity extends OpenGLActivity {
         }
         return temp;
     }
+    /**
+     *
+     * @param endTime time at the end of the stage
+     * @param cardNum ammount of cards
+     * @return  boolean determining if the player was quick enough
+     */
     private boolean timeCheck(long endTime, int cardNum){
         long timeTaken = (endTime-startTime)/1000; //time in seconds
         if (timeTaken < (cardNum*10)){
@@ -705,6 +726,11 @@ public class CardsActivity extends OpenGLActivity {
             return false;
         }
     }
+    /**
+     *
+     * @param endTime   time at the end of the stage
+     * @return  a boolean determining if difficulty should be increased
+     */
     private boolean difficultyCheck(long endTime){
         boolean temporary = true;
         if (nbackAnswers.size() !=0){
@@ -731,16 +757,63 @@ public class CardsActivity extends OpenGLActivity {
         }
         return temporary;
     }
+    /**
+     * Increment difficulty based on its current value
+     */
     private void difficultyIncrease(){
         if (!(difficulty+1 > cardsRenderer.getNumOfCards().x+cardsRenderer.getNumOfCards().y)){
-            if (difficulty == 0){
-                difficulty += 2;
+            if (difficulty == 0 || difficulty == 1){
+                difficulty = 2;
             }
             else {
                 difficulty +=1;
             }
         }
 
+    }
+
+    /**
+     *
+     * @param temp array of answers
+     * @return  shuffled array of answers
+     */
+    private String[] answerShifter(String[] temp){
+        String[] answers = new String[3];
+        int shift = new Random().nextInt(7);
+        switch (shift){
+            case 0:
+                answers[0]=temp[2];
+                answers[1]=temp[1];
+                answers[2]=temp[0];
+                break;
+            case 1:
+                answers[0]=temp[2];
+                answers[1]=temp[0];
+                answers[2]=temp[1];
+                break;
+            case 2:
+                answers[0]=temp[1];
+                answers[1]=temp[0];
+                answers[2]=temp[2];
+                break;
+            case 3:
+                answers[0]=temp[1];
+                answers[1]=temp[2];
+                answers[2]=temp[0];
+                break;
+            case 4:
+                answers[0]=temp[0];
+                answers[1]=temp[1];
+                answers[2]=temp[2];
+                break;
+            case 5:
+                answers[0]=temp[0];
+                answers[1]=temp[2];
+                answers[2]=temp[1];
+                break;
+        }
+
+        return answers;
     }
 
 }
