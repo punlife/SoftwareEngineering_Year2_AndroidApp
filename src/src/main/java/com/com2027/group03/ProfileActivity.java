@@ -8,6 +8,10 @@ import android.view.MenuItem;
 import android.widget.TextView;
 import android.widget.Toast;
 
+/**
+ * Created by Akhil on 26/04/17.
+ */
+
 public class ProfileActivity extends AppCompatActivity {
 
     // declare fields to view the user name and email

@@ -8,17 +8,14 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
-import android.util.Log;
-
-import com.com2027.group03.ServerRequest;
-import com.com2027.group03.ServerResponse;
-import com.com2027.group03.User;
 
 import retrofit2.Call;
 import retrofit2.Callback;
-import retrofit2.Response;
 import retrofit2.Retrofit;
-import retrofit2.converter.gson.GsonConverterFactory;
+
+/**
+ * Created by Akhil on 23/04/17.
+ */
 
 public class RegisterActivity extends AppCompatActivity implements View.OnClickListener {
 
@@ -65,39 +62,11 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
 
         //todo implement based on victor's server
 
-<<<<<<< HEAD
-        //Retrofit retrofit = new
-=======
-        Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl(Constants.BASE_URL)
-                .addConverterFactory(GsonConverterFactory.create())
-                .build();
 
-        RequestInterface requestInterface = retrofit.create(RequestInterface.class);
 
-        User user = new User();
-        user.setNickname(username);
-        user.setEmail(email);
-        user.setPassword(password);
-        user.setAnonymity(1);
-        ServerRequest request = new ServerRequest();
-        request.setOperation(Constants.REGISTER_OPERATION);
-        request.setUser(user);
-        Call<ServerResponse> response = requestInterface.operation(request);
+        Retrofit retrofit = new
 
-        response.enqueue(new Callback<ServerResponse>() {
-            @Override
-            public void onResponse(Call<ServerResponse> call, retrofit2.Response<ServerResponse> response) {
-                ServerResponse resp = response.body();
->>>>>>> bf5a000a098da6c133f65b23145ad834a65a1cca
 
-            }
-
-            @Override
-            public void onFailure(Call<ServerResponse> call, Throwable t) {
-                Log.d(Constants.TAG,"failed");
-            }
-        });
         /*progressDialog.setMessage("Registering user...");
         progressDialog.show();
 

@@ -21,6 +21,10 @@ import org.json.JSONObject;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * Created by Akhil on 21/04/17.
+ */
+
 public class LoginActivity extends AppCompatActivity implements View.OnClickListener {
 
     //  declare field to edit username and password
