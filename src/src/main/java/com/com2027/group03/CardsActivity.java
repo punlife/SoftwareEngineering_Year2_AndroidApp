@@ -9,6 +9,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.hardware.Sensor;
 import android.hardware.SensorManager;
+import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.MotionEvent;
@@ -60,7 +61,7 @@ public class CardsActivity extends OpenGLActivity {
             this.x = x;
             this.y = y;
         }
-    };
+    }
 
     private List<PickedCard> pickedCards = new ArrayList<PickedCard>();
     private AtomicBoolean disableTouch = new AtomicBoolean(false);
@@ -77,7 +78,7 @@ public class CardsActivity extends OpenGLActivity {
     private final String[] cardTypes = {"Chair","Sofa", "Rose","Sunflower", "Modern car", "Old car", "Shell", "Fossil", "Crow", "Seagull", "Green tree", "Yellow tree", "Elder leaf", "Chestnut leaf",
             "Strawberry", "Peach", "Plant", "Plant", "Snowy peak", "Mountain", "Notebook", "Book", "Spoon", "Fork", "Pencil", "Pen"};
 
-
+    MediaPlayer mp;
     // The padding from the border of the screen
     // In percentages!
     private static final float SCREEN_BORDER_PADDING = 0.05f; // 5%
@@ -87,7 +88,6 @@ public class CardsActivity extends OpenGLActivity {
     public void setup(Bundle bundle){
 
         this.setBackgroundColor(Color.WHITE);
-
         // Create a new card renderer with a specific image of cards
         cardsRenderer = new CardsRenderer(getBaseContext(), R.drawable.cards_test);
 
@@ -429,6 +429,8 @@ public class CardsActivity extends OpenGLActivity {
 
         // Has the user touched the screen?
         if(e.getAction() == MotionEvent.ACTION_DOWN) {
+            mp = MediaPlayer.create(CardsActivity.this, R.raw.sound);
+            mp.start();
 
             // Any cards to render?
             if(cardsRenderer.getTotalCardsLeft() > 0) {
@@ -475,6 +477,8 @@ public class CardsActivity extends OpenGLActivity {
 
                         // Are they same cards?
                         if (a.card == b.card) {
+                            mp = MediaPlayer.create(CardsActivity.this, R.raw.success);
+                            mp.start();
                             cardMatchCounter += 1;
                             Log.d(TAG, "Same cards!");
                             disableTouch.set(true);
@@ -546,7 +550,6 @@ public class CardsActivity extends OpenGLActivity {
                                             alertDialog.show();
                                         }
                                     });
-
                                     dialog.show();
                                     cardMatchCounter = 0;
                                 }

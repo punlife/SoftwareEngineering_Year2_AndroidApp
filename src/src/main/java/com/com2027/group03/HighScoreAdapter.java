@@ -36,42 +36,34 @@ public class HighScoreAdapter extends ArrayAdapter<String> {
         this.temp = prepareHighscores(sortMap(assignHighscores(list)));
     }
 
+    private TextView name;
+    private TextView score;
+    private TextView rank;
 
-    static class ViewHolder {
-        protected TextView name;
-        protected TextView score;
-        protected TextView rank;
-    }
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
-        View view = null;
-        List<String> names;
-        List<String> scores;
+        
+        View mView = convertView;
 
-        if (convertView == null) {
+        if (mView == null) {
             LayoutInflater inflator = LayoutInflater.from(context);
-            view = inflator.inflate(R.layout.highscorelist, null);
-            final ViewHolder viewHolder = new ViewHolder();
-            viewHolder.name = (TextView) view.findViewById(R.id.hsname);
-            viewHolder.score = (TextView) view.findViewById(R.id.hsscore);
-            viewHolder.rank = (TextView) view.findViewById(R.id.hsrank);
-            view.setTag(viewHolder);
-        } else {
-            view = convertView;
+            mView = inflator.inflate(R.layout.highscorelist, null);
+            name = (TextView) mView.findViewById(R.id.hsname);
+            score = (TextView)  mView.findViewById(R.id.hsscore);
+            rank = (TextView)  mView.findViewById(R.id.hsrank);
+
         }
 
-        ViewHolder holder = (ViewHolder) view.getTag();
         if (!(position >= temp.get(0).size())){
-            holder.name.setText(temp.get(0).get(position).toString());
-            holder.rank.setText(String.valueOf(position+1)+")");
-            holder.score.setText(temp.get(1).get(position).toString());
+            name.setText(temp.get(0).get(position).toString());
+            rank.setText(String.valueOf(position+1)+")");
+            score.setText(temp.get(1).get(position).toString());
         }
         else {
             Log.i("HighScoreAdapter", "Catching trouble");
         }
 
-
-        return view;
+        return mView;
     }
     private HashMap<String,String> assignHighscores(List<String> hs){
         HashMap<String,String> highscores = new HashMap<String, String>();
@@ -105,6 +97,17 @@ public class HighScoreAdapter extends ArrayAdapter<String> {
         temp.add(names);
         temp.add(scores);
         return temp;
+    }
+    @Override
+    public int getViewTypeCount() {
+
+        return getCount();
+    }
+
+    @Override
+    public int getItemViewType(int position) {
+
+        return position;
     }
 }
 

@@ -1,12 +1,15 @@
 package com.com2027.group03;
 
 import android.app.AlarmManager;
+import android.app.Dialog;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.drawable.ColorDrawable;
 import android.hardware.Sensor;
 import android.hardware.SensorManager;
+import android.media.MediaPlayer;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
@@ -43,6 +46,7 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         ActionBar actionBar = getSupportActionBar();
         actionBar.hide();
+        final MediaPlayer mp = MediaPlayer.create(MainActivity.this, R.raw.click1);
         // ShakeDetector initialization
         mSensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
         mAccelerometer = mSensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
@@ -77,6 +81,7 @@ public class MainActivity extends AppCompatActivity {
         play_b.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                mp.start();
                 Intent intent = new Intent(MainActivity.this, CardsActivity.class);
                 intent.putExtra("cardsPerRow", 3); // 3 cards per row, therefore 2 cards per column
                 intent.putExtra("initialShowDelay", 6000); // 3 seconds
@@ -89,6 +94,7 @@ public class MainActivity extends AppCompatActivity {
         contactUs_b.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                mp.start();
                 Intent contactUs = new Intent(MainActivity.this, ContactPage.class);
                 startActivity(contactUs);
             }
@@ -104,6 +110,7 @@ public class MainActivity extends AppCompatActivity {
             highscore_b.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
+                    mp.start();
                     AlertDialog.Builder builder = new AlertDialog.Builder(view.getContext());
                     LayoutInflater inflater = LayoutInflater.from(MainActivity.this);
                     View v = inflater.inflate(R.layout.highscore_dialog, null);
@@ -116,7 +123,8 @@ public class MainActivity extends AppCompatActivity {
                             });
                     ListView lv = (ListView) v.findViewById(R.id.hslistview);
                     lv.setAdapter(adapter);
-                    builder.create().show();
+                    Dialog dialog = builder.create();
+                    dialog.show();
 
                 }
             });
