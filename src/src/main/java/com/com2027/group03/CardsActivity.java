@@ -14,6 +14,7 @@ import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.RadioButton;
 import android.widget.TextView;
 
@@ -487,6 +488,7 @@ public class CardsActivity extends OpenGLActivity {
                                     dialog.setContentView(R.layout.nback_dialog);
                                     dialog.setTitle("Pick a card");
                                     dialog.setCancelable(false);
+                                    final ImageView iv1 = (ImageView) dialog.findViewById(R.id.nbackiv);
                                     final TextView tv1 = (TextView) dialog.findViewById(R.id.nbacktext);
                                     final RadioButton rd1 = (RadioButton) dialog.findViewById(R.id.rd_1);
                                     final RadioButton rd2 = (RadioButton) dialog.findViewById(R.id.rd_2);
@@ -497,7 +499,13 @@ public class CardsActivity extends OpenGLActivity {
                                     rd1.setText(answers[0]);
                                     rd2.setText(answers[1]);
                                     rd3.setText(answers[2]);
-                                    tv1.setText("Choose a card you matched " + difficulty + " turns ago:");
+                                    if (difficulty-1 == 1){
+                                        tv1.setText("Choose a card you matched " + (difficulty-1) + " turn ago:");
+                                    }
+                                    else{
+                                        tv1.setText("Choose a card you matched " + (difficulty-1) + " turns ago:");
+                                    }
+
                                     b1.setOnClickListener(new View.OnClickListener(){
                                         @Override
                                         public void onClick(View v){

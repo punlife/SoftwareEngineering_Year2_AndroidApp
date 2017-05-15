@@ -7,72 +7,82 @@
     android:background="@color/mutedBlue">
 
     <ImageView
-        android:id="@+id/imageView"
+        android:id="@+id/nbackiv"
         android:layout_width="match_parent"
-        android:layout_height="120dp"
+        android:layout_height="80dp"
+        android:contentDescription="@string/app_name"
         android:scaleType="centerCrop"
-        app:srcCompat="@drawable/nbackimage" />
+        android:src="@drawable/nbackimage" />
 
-    <TextView
-        android:id="@+id/nbacktitle"
-        android:layout_width="wrap_content"
+    <RelativeLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/imageView"
-        android:text="Pick a card"
-        android:textSize="36sp"
-        android:textStyle="bold"
-        tools:textColor="@android:color/white" />
+        android:layout_below="@+id/nbackiv">
 
-    <TextView
-        android:id="@+id/nbacktext"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/nbacktitle"
-        android:text="Choose a card you picked n turns ago"
-        android:textSize="20sp" />
-
-    <RadioGroup
-        android:id="@+id/radiogroup"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/nbacktext">
-
-        <RadioButton
-            android:id="@+id/rd_1"
+        <TextView
+            android:id="@+id/nbacktitle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/textView"
-            android:layout_weight="1"
-            android:text="A"
-            android:textSize="18sp" />
 
-        <RadioButton
-            android:id="@+id/rd_2"
+            android:text="Pick a card"
+            android:textSize="36sp"
+            android:textStyle="bold"
+            tools:textColor="@android:color/white" />
+
+        <RadioGroup
+            android:id="@+id/radiogroup"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/rd_1"
-            android:layout_weight="1"
-            android:text="B"
-            android:textSize="18sp" />
+            android:layout_below="@+id/nbacktext">
 
-        <RadioButton
-            android:id="@+id/rd_3"
+            <RadioButton
+                android:id="@+id/rd_1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/textView"
+                android:layout_weight="1"
+                android:text="A"
+                android:textColor="@android:color/white"
+                android:textSize="18sp" />
+
+            <RadioButton
+                android:id="@+id/rd_2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/rd_1"
+                android:layout_weight="1"
+                android:text="B"
+                android:textColor="@android:color/white"
+                android:textSize="18sp" />
+
+            <RadioButton
+                android:id="@+id/rd_3"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/rd_2"
+                android:layout_weight="1"
+                android:text="C"
+                android:textColor="@android:color/white"
+                android:textSize="18sp" />
+        </RadioGroup>
+
+        <TextView
+            android:id="@+id/nbacktext"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/rd_2"
-            android:layout_weight="1"
-            android:text="C"
-            android:textSize="18sp" />
-    </RadioGroup>
+            android:layout_below="@+id/nbacktitle"
+            android:text="Choose a card you picked n turns ago"
+            android:textColor="@android:color/white"
+            android:textSize="20sp" />
 
-
-    <Button
-        android:id="@+id/dialogbutton"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/radiogroup"
-        android:layout_centerInParent="true"
-        android:text="OK" />
+        <Button
+            android:id="@+id/dialogbutton"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/radiogroup"
+            android:layout_centerInParent="true"
+            android:text="OK" />
+    </RelativeLayout>
 
 
 </RelativeLayout>
