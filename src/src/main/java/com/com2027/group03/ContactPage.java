@@ -118,7 +118,7 @@ public class ContactPage extends AppCompatActivity {
         linearLayout.addView(sendButton);
 
 
-        // SRC: http://tekeye.biz/2012/email-contact-form-in-app
+        // SRC: http://tekeye.biz/2012/email-contact-form-in-app. I learnt from this and then went away and coded it from what I had learnt
 
         sendButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -141,8 +141,8 @@ public class ContactPage extends AppCompatActivity {
                 // write the body of the email
                 sendMail.putExtra(Intent.EXTRA_TEXT, "Dear Valram, \n \n" + messageOfPerson + "\n \n Kind Regards,\n" + nameOfPerson + "\n" + emailOfPerson);
 
-                // forces the app to open a mail app in order to send the email - I THINK
-                // changes it from plain text, to getting the values from the field - I THINK
+                // forces the app to open a mail app in order to send the email
+                // changes it from plain text, to getting the values from the field
                 sendMail.setType("message/rfc822");
                 // user can then choose which app to open to send the email - http://stackoverflow.com/questions/2197741/how-can-i-send-emails-from-my-android-application
                 try {
@@ -167,6 +167,41 @@ public class ContactPage extends AppCompatActivity {
         });
 
         setContentView(linearLayout);
+    }
+
+    /**
+     * These two methods are used by the app to remember what has been typed in the fields
+     * This ensures that when the device is rotated, the onCreate method is not called again and resetting the contents of the fields
+     *
+     * @param savedInstanceState
+     */
+    @Override
+    protected void onRestoreInstanceState(Bundle savedInstanceState){
+        super.onRestoreInstanceState(savedInstanceState);
+
+        // when the activity gets restored again, call the key and get the value
+        name.setText(savedInstanceState.getString("name"));
+        fullName.setText(savedInstanceState.getString("fullName"));
+        // need to save the spinner option when it turns as well
+        emailAdd.setText(savedInstanceState.getString("emailAdd"));
+        email.setText(savedInstanceState.getString("email"));
+        messageLabel.setText(savedInstanceState.getString("messageLabel"));
+        message.setText(savedInstanceState.getString("message"));
+
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle savedInstanceState) {
+        super.onSaveInstanceState(savedInstanceState);
+
+        // save all the inputs into a hash using keys and values, converting their input into a string
+        savedInstanceState.putString("name", name.getText().toString());
+        savedInstanceState.putString("fullName", fullName.getText().toString());
+        // need to save the spinner option when it turns as well
+        savedInstanceState.putString("emailAdd", emailAdd.getText().toString());
+        savedInstanceState.putString("email", email.getText().toString());
+        savedInstanceState.putString("messageLabel", messageLabel.getText().toString());
+        savedInstanceState.putString("message", message.getText().toString());
     }
 
 }
