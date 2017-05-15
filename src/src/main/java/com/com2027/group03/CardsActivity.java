@@ -1,29 +1,39 @@
 package com.com2027.group03;
 
+import android.app.AlarmManager;
 import android.app.AlertDialog;
 import android.app.Dialog;
+import android.app.PendingIntent;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.hardware.Sensor;
+import android.hardware.SensorManager;
+import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.RadioButton;
 import android.widget.TextView;
-import android.widget.Toast;
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.OutputStreamWriter;
 import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.TimerTask;
 import java.util.Timer;
-
 import java.util.Random;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
  * Created by Matus on 12-Mar-17.
+ * Updated by Lukas on 14-May-17.
  */
 public class CardsActivity extends OpenGLActivity {
     private CardsRenderer cardsRenderer;
@@ -51,7 +61,7 @@ public class CardsActivity extends OpenGLActivity {
             this.x = x;
             this.y = y;
         }
-    };
+    }
 
     private List<PickedCard> pickedCards = new ArrayList<PickedCard>();
     private AtomicBoolean disableTouch = new AtomicBoolean(false);
@@ -68,6 +78,7 @@ public class CardsActivity extends OpenGLActivity {
     private final String[] cardTypes = {"Chair","Sofa", "Rose","Sunflower", "Modern car", "Old car", "Shell", "Fossil", "Crow", "Seagull", "Green tree", "Yellow tree", "Elder leaf", "Chestnut leaf",
             "Strawberry", "Peach", "Plant", "Plant", "Snowy peak", "Mountain", "Notebook", "Book", "Spoon", "Fork", "Pencil", "Pen"};
 
+    MediaPlayer mp;
     // The padding from the border of the screen
     // In percentages!
     private static final float SCREEN_BORDER_PADDING = 0.05f; // 5%
@@ -75,8 +86,8 @@ public class CardsActivity extends OpenGLActivity {
 
     @Override
     public void setup(Bundle bundle){
-        this.setBackgroundColor(Color.WHITE);
 
+        this.setBackgroundColor(Color.WHITE);
         // Create a new card renderer with a specific image of cards
         cardsRenderer = new CardsRenderer(getBaseContext(), R.drawable.cards_test);
 
@@ -90,7 +101,7 @@ public class CardsActivity extends OpenGLActivity {
         scoreFont = new OpenGLFont();
 
         try {
-            backgroundTexture.load(getBaseContext(), R.drawable.cards_background);
+            backgroundTexture.load(getBaseContext(), R.drawable.gamebackground);
             numbersTexture.load(getBaseContext(), R.drawable.numbers);
             goTexture.load(getBaseContext(), R.drawable.go);
             buttonRepeatTexture.load(getBaseContext(), R.drawable.button_repeat);
@@ -347,8 +358,48 @@ public class CardsActivity extends OpenGLActivity {
                         }
                     }
                 }
+                if (difficulty == 0){
+                    difficulty = 1;
+                }
                 answerScore = ((answerCounter*10)*answerMultiplier)*difficulty;
+
                 int score = Math.max((difficulty * 10) * (stage * stageCounter * 2) - (seconds / 2) + answerScore, 0);
+
+                String filename = "highscores";
+                String string = Constants.NICKNAME+","+score+ System.lineSeparator();
+
+                File file = new File(getFilesDir(),filename);
+
+
+                if(file.exists()){
+                    try {
+                        FileOutputStream fos=new FileOutputStream(file,true);
+                        fos.write(string.getBytes());
+                        Log.i("File:",file.toString());
+                        fos.close();
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                }
+                else{
+                    try {
+                        file.createNewFile();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                    try {
+                        FileOutputStream outputStream;
+                        outputStream = openFileOutput(filename, Context.MODE_PRIVATE);
+                        outputStream.write(string.getBytes());
+                        outputStream.close();
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                }
+
+
+
+
 
                 Log.d(TAG, "Total time took: " + seconds + " seconds!");
                 scoreText = new Text(
@@ -378,6 +429,8 @@ public class CardsActivity extends OpenGLActivity {
 
         // Has the user touched the screen?
         if(e.getAction() == MotionEvent.ACTION_DOWN) {
+            mp = MediaPlayer.create(CardsActivity.this, R.raw.sound);
+            mp.start();
 
             // Any cards to render?
             if(cardsRenderer.getTotalCardsLeft() > 0) {
@@ -424,38 +477,39 @@ public class CardsActivity extends OpenGLActivity {
 
                         // Are they same cards?
                         if (a.card == b.card) {
+                            mp = MediaPlayer.create(CardsActivity.this, R.raw.success);
+                            mp.start();
                             cardMatchCounter += 1;
                             Log.d(TAG, "Same cards!");
                             disableTouch.set(true);
                             pickedCardTypes.add(a.card.getName());
 
-                            ///LUKAS
-                            ///
-                            ///
-                            ///
-                            ///
-                            ///
-                            ///
                             Log.d(TAG, "PickedCardTypes"+ pickedCardTypes.size());
                             Log.d(TAG, "cardMatchCounter"+ cardMatchCounter);
                             if (difficulty != 0 && difficulty <= cardMatchCounter ) {
                                 if ((pickedCardTypes.size() - difficulty) >= 0) {
                                     final Dialog dialog = new Dialog(CardsActivity.this);
                                     dialog.setContentView(R.layout.nback_dialog);
-                                    dialog.setTitle("This is my custom dialog box");
+                                    dialog.setTitle("Pick a card");
                                     dialog.setCancelable(false);
-                                    // there are a lot of settings, for dialog, check them all out!
-                                    // set up radiobutton
+                                    final ImageView iv1 = (ImageView) dialog.findViewById(R.id.nbackiv);
                                     final TextView tv1 = (TextView) dialog.findViewById(R.id.nbacktext);
                                     final RadioButton rd1 = (RadioButton) dialog.findViewById(R.id.rd_1);
                                     final RadioButton rd2 = (RadioButton) dialog.findViewById(R.id.rd_2);
                                     final RadioButton rd3 = (RadioButton) dialog.findViewById(R.id.rd_3);
                                     final Button b1 = (Button) dialog.findViewById(R.id.dialogbutton);
                                     final RadioButton[] rBs = {rd1,rd2,rd3};
-                                    rd1.setText(nBack()[0]);
-                                    rd2.setText(nBack()[1]);
-                                    rd3.setText(nBack()[2]);
-                                    tv1.setText("Choose a card you matched " + difficulty + " turn ago:");
+                                    String[] answers = answerShifter(nBack());
+                                    rd1.setText(answers[0]);
+                                    rd2.setText(answers[1]);
+                                    rd3.setText(answers[2]);
+                                    if (difficulty-1 == 1){
+                                        tv1.setText("Choose a card you matched " + (difficulty-1) + " turn ago:");
+                                    }
+                                    else{
+                                        tv1.setText("Choose a card you matched " + (difficulty-1) + " turns ago:");
+                                    }
+
                                     b1.setOnClickListener(new View.OnClickListener(){
                                         @Override
                                         public void onClick(View v){
@@ -483,7 +537,7 @@ public class CardsActivity extends OpenGLActivity {
                                             builder.setNeutralButton("OK", new DialogInterface.OnClickListener() {
                                                 @Override
                                                 public void onClick(DialogInterface dialog, int which) {
-                                                    //do stuff
+                                                    //do nothing
                                                 }
                                             });
                                             if (buttonStatus == true){
@@ -496,7 +550,6 @@ public class CardsActivity extends OpenGLActivity {
                                             alertDialog.show();
                                         }
                                     });
-
                                     dialog.show();
                                     cardMatchCounter = 0;
                                 }
@@ -548,6 +601,11 @@ public class CardsActivity extends OpenGLActivity {
 
                     switch (difficulty){
                         case 0:
+                            if (true){
+                                difficultyIncrease();
+                            }
+                            break;
+                        case 1:
                             if (true){
                                 difficultyIncrease();
                             }
@@ -643,7 +701,16 @@ public class CardsActivity extends OpenGLActivity {
     }
 
     private String[] nBack() {
-        String[] temp = {pickedCardTypes.get(pickedCardTypes.size() - difficulty),cardTypes[new Random().nextInt(cardTypes.length)],cardTypes[new Random().nextInt(cardTypes.length)]};
+        String[] temp = new String[3];
+        temp[0]= pickedCardTypes.get(pickedCardTypes.size() - difficulty);
+        temp[1]= cardTypes[new Random().nextInt(cardTypes.length)];
+        temp[2]= cardTypes[new Random().nextInt(cardTypes.length)];
+        while (temp[1].equals(temp[0])){
+            temp[1]= cardTypes[new Random().nextInt(cardTypes.length)];
+        }
+        while (temp[2].equals(temp[0]) || temp[2].equals(temp[1]) ){
+            temp[2]= cardTypes[new Random().nextInt(cardTypes.length)];
+        }
         return temp;
     }
     private int answerCounterCheck(){
@@ -655,6 +722,12 @@ public class CardsActivity extends OpenGLActivity {
         }
         return temp;
     }
+    /**
+     *
+     * @param endTime time at the end of the stage
+     * @param cardNum ammount of cards
+     * @return  boolean determining if the player was quick enough
+     */
     private boolean timeCheck(long endTime, int cardNum){
         long timeTaken = (endTime-startTime)/1000; //time in seconds
         if (timeTaken < (cardNum*10)){
@@ -664,6 +737,11 @@ public class CardsActivity extends OpenGLActivity {
             return false;
         }
     }
+    /**
+     *
+     * @param endTime   time at the end of the stage
+     * @return  a boolean determining if difficulty should be increased
+     */
     private boolean difficultyCheck(long endTime){
         boolean temporary = true;
         if (nbackAnswers.size() !=0){
@@ -690,16 +768,63 @@ public class CardsActivity extends OpenGLActivity {
         }
         return temporary;
     }
+    /**
+     * Increment difficulty based on its current value
+     */
     private void difficultyIncrease(){
         if (!(difficulty+1 > cardsRenderer.getNumOfCards().x+cardsRenderer.getNumOfCards().y)){
-            if (difficulty == 0){
-                difficulty += 2;
+            if (difficulty == 0 || difficulty == 1){
+                difficulty = 2;
             }
             else {
                 difficulty +=1;
             }
         }
 
+    }
+
+    /**
+     *
+     * @param temp array of answers
+     * @return  shuffled array of answers
+     */
+    private String[] answerShifter(String[] temp){
+        String[] answers = new String[3];
+        int shift = new Random().nextInt(7);
+        switch (shift){
+            case 0:
+                answers[0]=temp[2];
+                answers[1]=temp[1];
+                answers[2]=temp[0];
+                break;
+            case 1:
+                answers[0]=temp[2];
+                answers[1]=temp[0];
+                answers[2]=temp[1];
+                break;
+            case 2:
+                answers[0]=temp[1];
+                answers[1]=temp[0];
+                answers[2]=temp[2];
+                break;
+            case 3:
+                answers[0]=temp[1];
+                answers[1]=temp[2];
+                answers[2]=temp[0];
+                break;
+            case 4:
+                answers[0]=temp[0];
+                answers[1]=temp[1];
+                answers[2]=temp[2];
+                break;
+            case 5:
+                answers[0]=temp[0];
+                answers[1]=temp[2];
+                answers[2]=temp[1];
+                break;
+        }
+
+        return answers;
     }
 
 }

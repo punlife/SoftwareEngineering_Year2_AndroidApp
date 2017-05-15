@@ -26,7 +26,6 @@
 ## Week 5
 - Wrote the minutes for supervised meeting
 - Justified design choices in supervised meeting
-- 
 
 ## Week 6
 - Took minutes for supervised meeting
@@ -35,10 +34,16 @@
 - Started in the GUI for the game
 
 ## Week 7
+- Created the LoginActivity class
+-
 
 ## Week 8
+- Created the SharedPreManager class
 
 ## Week 9
+- Created the RegisterActivity class
+- Created ProfileActivity Class
+- Created Constants Class
 
 ## Week 10
 
