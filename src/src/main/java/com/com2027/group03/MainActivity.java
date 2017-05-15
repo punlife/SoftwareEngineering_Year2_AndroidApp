@@ -1,7 +1,12 @@
 package com.com2027.group03;
 
+import android.app.AlarmManager;
+import android.app.PendingIntent;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.hardware.Sensor;
+import android.hardware.SensorManager;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
@@ -26,6 +31,11 @@ import java.util.List;
 import java.util.Map;
 
 public class MainActivity extends AppCompatActivity {
+    //Shake related fields
+    private SensorManager mSensorManager;
+    private Sensor mAccelerometer;
+    private ShakeSensor mShakeSensor;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -33,6 +43,17 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         ActionBar actionBar = getSupportActionBar();
         actionBar.hide();
+        // ShakeDetector initialization
+        mSensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
+        mAccelerometer = mSensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
+        mShakeSensor = new ShakeSensor();
+        mShakeSensor.setOnShakeListener(new ShakeSensor.OnShakeListener() {
+            @Override
+            public void onShake(int count) {
+
+                handleShakeEvent(count);
+            }
+        });
 
 
         //Intent intent = new Intent(this, TestSpritesActivity.class);
@@ -123,7 +144,18 @@ public class MainActivity extends AppCompatActivity {
 
         }
     }
-
+    @Override
+    public void onResume() {
+        super.onResume();
+        // Add the following line to register the Session Manager Listener onResume
+        mSensorManager.registerListener(mShakeSensor, mAccelerometer,	SensorManager.SENSOR_DELAY_UI);
+    }
+    @Override
+    public void onPause() {
+        // Add the following line to unregister the Sensor Manager onPause
+        mSensorManager.unregisterListener(mShakeSensor);
+        super.onPause();
+    }
     private List<String> readHighscoresFromFile() {
         List<String> highscores = new ArrayList<String>();
         File file = new File(getFilesDir(), "highscores");
@@ -147,5 +179,30 @@ public class MainActivity extends AppCompatActivity {
         }
 
         return highscores;
+    }
+    public void handleShakeEvent(int count){
+        if (count > 2) {
+            android.app.AlertDialog.Builder restartShake = new android.app.AlertDialog.Builder(MainActivity.this);
+            restartShake.setTitle("Application restart")
+                    .setMessage("Do you want to restart the application?")
+                    .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            Intent mStartActivity = new Intent(MainActivity.this, MainActivity.class);
+                            int mPendingIntentId = 123456;
+                            PendingIntent mPendingIntent = PendingIntent.getActivity(MainActivity.this, mPendingIntentId, mStartActivity, PendingIntent.FLAG_CANCEL_CURRENT);
+                            AlarmManager mgr = (AlarmManager) MainActivity.this.getSystemService(Context.ALARM_SERVICE);
+                            mgr.set(AlarmManager.RTC, System.currentTimeMillis() + 100, mPendingIntent);
+                            System.exit(0);
+                        }
+                    })
+                    .setNegativeButton("No", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            //do nothing
+                        }
+                    });
+                    restartShake.create().show();
+        }
     }
 }

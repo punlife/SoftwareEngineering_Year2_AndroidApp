@@ -2,20 +2,21 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/mutedBlue"
     android:orientation="horizontal">
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         android:orientation="horizontal">
 
         <TextView
             android:id="@+id/hsrank"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_weight="12"
-            android:text="10)"
-            android:textSize="30sp" />
+            android:layout_weight="6"
+            android:textColor="@android:color/white"
+            android:textSize="40sp" />
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -27,15 +28,15 @@
                 android:id="@+id/hsname"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Player"
-                android:textSize="15sp" />
+                android:textColor="@android:color/white"
+                android:textSize="20sp" />
 
             <TextView
                 android:id="@+id/hsscore"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="Score"
-                android:textSize="15sp" />
+                android:layout_height="match_parent"
+                android:textColor="@android:color/white"
+                android:textSize="17sp" />
         </LinearLayout>
 
     </LinearLayout>

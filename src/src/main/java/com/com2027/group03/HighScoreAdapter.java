@@ -61,10 +61,15 @@ public class HighScoreAdapter extends ArrayAdapter<String> {
         }
 
         ViewHolder holder = (ViewHolder) view.getTag();
+        if (!(position >= temp.get(0).size())){
+            holder.name.setText(temp.get(0).get(position).toString());
+            holder.rank.setText(String.valueOf(position+1)+")");
+            holder.score.setText(temp.get(1).get(position).toString());
+        }
+        else {
+            Log.i("HighScoreAdapter", "Catching trouble");
+        }
 
-        holder.name.setText(temp.get(0).get(position).toString());
-        holder.rank.setText(String.valueOf(position+1)+")");
-        holder.score.setText(temp.get(1).get(position).toString());
 
         return view;
     }

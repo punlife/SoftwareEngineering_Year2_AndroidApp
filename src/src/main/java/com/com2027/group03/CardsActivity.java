@@ -1,10 +1,14 @@
 package com.com2027.group03;
 
+import android.app.AlarmManager;
 import android.app.AlertDialog;
 import android.app.Dialog;
+import android.app.PendingIntent;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.hardware.Sensor;
+import android.hardware.SensorManager;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.MotionEvent;
@@ -72,6 +76,7 @@ public class CardsActivity extends OpenGLActivity {
     private final String[] cardTypes = {"Chair","Sofa", "Rose","Sunflower", "Modern car", "Old car", "Shell", "Fossil", "Crow", "Seagull", "Green tree", "Yellow tree", "Elder leaf", "Chestnut leaf",
             "Strawberry", "Peach", "Plant", "Plant", "Snowy peak", "Mountain", "Notebook", "Book", "Spoon", "Fork", "Pencil", "Pen"};
 
+
     // The padding from the border of the screen
     // In percentages!
     private static final float SCREEN_BORDER_PADDING = 0.05f; // 5%
@@ -79,6 +84,7 @@ public class CardsActivity extends OpenGLActivity {
 
     @Override
     public void setup(Bundle bundle){
+
         this.setBackgroundColor(Color.WHITE);
 
         // Create a new card renderer with a specific image of cards
@@ -351,12 +357,15 @@ public class CardsActivity extends OpenGLActivity {
                         }
                     }
                 }
+                if (difficulty == 0){
+                    difficulty = 1;
+                }
                 answerScore = ((answerCounter*10)*answerMultiplier)*difficulty;
+
                 int score = Math.max((difficulty * 10) * (stage * stageCounter * 2) - (seconds / 2) + answerScore, 0);
 
-                //Lukas
                 String filename = "highscores";
-                String string = "player1,"+score+ System.lineSeparator();
+                String string = Constants.NICKNAME+","+score+ System.lineSeparator();
 
                 File file = new File(getFilesDir(),filename);
 
@@ -515,7 +524,7 @@ public class CardsActivity extends OpenGLActivity {
                                             builder.setNeutralButton("OK", new DialogInterface.OnClickListener() {
                                                 @Override
                                                 public void onClick(DialogInterface dialog, int which) {
-                                                    //do stuff
+                                                    //do nothing
                                                 }
                                             });
                                             if (buttonStatus == true){
