@@ -9,7 +9,6 @@ public class User {
     private String email;
     private String unique_id;
     private String password;
-    private int anonymity;
     //For future, to allow user to change password
     private String old_password;
     private String new_password;
@@ -26,10 +25,6 @@ public class User {
         return unique_id;
     }
 
-    public int getAnonymity(){
-        return anonymity;
-    }
-
     public void setNickname(String nickname){
         this.nickname = nickname;
     }
@@ -42,9 +37,6 @@ public class User {
         this.password = password;
     }
 
-    public void setAnonymity(int anonymity){
-        this.anonymity = anonymity;
-    }
 
     public void setOld_password(String old_password){
         this.old_password = old_password;

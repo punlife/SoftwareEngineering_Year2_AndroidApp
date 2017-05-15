@@ -2,6 +2,7 @@ package com.com2027.group03;
 
 import android.app.ProgressDialog;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
@@ -21,14 +22,15 @@ import org.json.JSONObject;
 import java.util.HashMap;
 import java.util.Map;
 
-/**
- * Created by Akhil on 21/04/17.
- */
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Retrofit;
+import retrofit2.converter.gson.GsonConverterFactory;
 
 public class LoginActivity extends AppCompatActivity implements View.OnClickListener {
 
     //  declare field to edit username and password
-    private EditText editTextUsername, editTextPassword;
+    private EditText editTextEmail, editTextPassword;
     // declare button to login
     private Button buttonLogin;
     private ProgressDialog progressDialog;
@@ -45,7 +47,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         }
 
         // inflate the edit texts
-        editTextUsername = (EditText) findViewById(R.id.editTextUsername);
+        editTextEmail = (EditText) findViewById(R.id.editTextEmail);
         editTextPassword = (EditText) findViewById(R.id.editTextPassword);
         buttonLogin = (Button) findViewById(R.id.buttonLogin);
 
@@ -59,73 +61,50 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
 
     private void userLogin(){
         // get the username and password typed by the user and converting it into a string
-        final String username = editTextUsername.getText().toString().trim();
+        final String email = editTextEmail.getText().toString().trim();
         final String password = editTextPassword.getText().toString().trim();
 
         // display the progress dialog
         progressDialog.show();
 
-        /**
-         * should everything be successful, save the new user name and password to the database
-         * if there is an error, alert the user and get them to re-enter their details
-         */
-        StringRequest stringRequest = new StringRequest(
-                Request.Method.POST,
-                Constants.URL_LOGIN,
-                new Response.Listener<String>() {
-                    @Override
-                    public void onResponse(String response) {
-                        progressDialog.dismiss();
-                        try {
-                            JSONObject obj = new JSONObject(response);
-                            if(!obj.getBoolean("error")){
-                                SharedPrefManager.getInstance(getApplicationContext())
-                                        .userLogin(
-                                                obj.getInt("id"),
-                                                obj.getString("username"),
-                                                obj.getString("email")
-                                        );
-                                startActivity(new Intent(getApplicationContext(), ProfileActivity.class));
-                                finish();
-                            }else{
-                                Toast.makeText(
-                                        getApplicationContext(),
-                                        "Message: " + obj.getString("message"),
-                                        Toast.LENGTH_LONG
-                                ).show();
-                            }
-                        } catch (JSONException e) {
-                            e.printStackTrace();
-                        }
-                    }
-                },
-                new Response.ErrorListener() {
-                    @Override
-                    public void onErrorResponse(VolleyError error) {
-                        progressDialog.dismiss();
+        Retrofit retrofit = new Retrofit.Builder()
+                .baseUrl(Constants.BASE_URL)
+                .addConverterFactory(GsonConverterFactory.create())
+                .build();
 
-                        Toast.makeText(
-                                getApplicationContext(),
-                                "Error: " + error.getMessage(),
-                                Toast.LENGTH_LONG
-                        ).show();
-                    }
-                }
-        ){
-            /*
-            create a map and key with the user names and passwords
-             */
+        RequestInterface requestInterface = retrofit.create(RequestInterface.class);
+
+        User user = new User();
+        user.setEmail(email);
+        user.setPassword(password);
+        ServerRequest request = new ServerRequest();
+        request.setOperation(Constants.LOGIN_OPERATION);
+        request.setUser(user);
+        Call<ServerResponse> response = requestInterface.operation(request);
+
+        response.enqueue(new Callback<ServerResponse>() {
             @Override
-            protected Map<String, String> getParams() throws AuthFailureError {
-                Map<String, String> params = new HashMap<>();
-                params.put("username", username);
-                params.put("password", password);
-                return params;
+            public void onResponse(Call<ServerResponse> call, retrofit2.Response<ServerResponse> response) {
+                ServerResponse resp = response.body();
+
+                if(resp.getResult().equals(Constants.SUCCESS)){
+                    SharedPreferences.Editor editor = getPreferences(0).edit();
+                    editor.putBoolean(Constants.IS_LOGGED_IN,true);
+                    editor.putString(Constants.EMAIL,resp.getUser().getEmail());
+                    editor.putString(Constants.NICKNAME, resp.getUser().getNickname());
+                    editor.putString(Constants.UNIQUE_ID, resp.getUser().getUnique_id());
+                    editor.apply();
+
+                }
             }
 
-        };
+            @Override
+            public void onFailure(Call<ServerResponse> call, Throwable t) {
 
-        RequestHandler.getInstance(this).addToRequestQueue(stringRequest);
+            }
+        });
+
+
     }
 
     @Override

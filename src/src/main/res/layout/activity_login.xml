@@ -8,7 +8,7 @@
     android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
-    tools:context="net.simplifiedcoding.androidphpmysql.LoginActivity">
+    tools:context="com.com2027.group03.LoginActivity">
 
 
     <LinearLayout
@@ -21,13 +21,13 @@
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Username" />
+            android:text="Email" />
 
         <EditText
-            android:id="@+id/editTextUsername"
+            android:id="@+id/editTextEmail"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="Enter username" />
+            android:hint="Enter Email" />
 
 
         <TextView

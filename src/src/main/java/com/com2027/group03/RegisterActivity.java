@@ -2,20 +2,24 @@ package com.com2027.group03;
 
 import android.app.ProgressDialog;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.util.Log;
+
+import com.com2027.group03.ServerRequest;
+import com.com2027.group03.ServerResponse;
+import com.com2027.group03.User;
 
 import retrofit2.Call;
 import retrofit2.Callback;
+import retrofit2.Response;
 import retrofit2.Retrofit;
-
-/**
- * Created by Akhil on 23/04/17.
- */
+import retrofit2.converter.gson.GsonConverterFactory;
 
 public class RegisterActivity extends AppCompatActivity implements View.OnClickListener {
 
@@ -30,7 +34,7 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.activity_register);
 
         if(SharedPrefManager.getInstance(this).isLoggedIn()){
             finish();
@@ -60,13 +64,40 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
         final String username = editTextUsername.getText().toString().trim();
         final String password = editTextPassword.getText().toString().trim();
 
+
+        String permisssion = "android.permission.ACCESS_NETWORK_STATE";
+        int res = getApplicationContext().checkCallingOrSelfPermission(permisssion);
+        Log.e("PErmissin",""+PackageManager.PERMISSION_GRANTED);
         //todo implement based on victor's server
 
+        Retrofit retrofit = new Retrofit.Builder()
+                .baseUrl(Constants.BASE_URL)
+                .addConverterFactory(GsonConverterFactory.create())
+                .build();
 
+        RequestInterface requestInterface = retrofit.create(RequestInterface.class);
 
-        Retrofit retrofit = new
+        User user = new User();
+        user.setNickname(username);
+        user.setEmail(email);
+        user.setPassword(password);
+        ServerRequest request = new ServerRequest();
+        request.setOperation(Constants.REGISTER_OPERATION);
+        request.setUser(user);
+        Call<ServerResponse> response = requestInterface.operation(request);
 
+        response.enqueue(new Callback<ServerResponse>() {
+            @Override
+            public void onResponse(Call<ServerResponse> call, retrofit2.Response<ServerResponse> response) {
+                ServerResponse resp = response.body();
 
+            }
+
+            @Override
+            public void onFailure(Call<ServerResponse> call, Throwable t) {
+                Log.d(Constants.TAG,"failed");
+            }
+        });
         /*progressDialog.setMessage("Registering user...");
         progressDialog.show();
 
