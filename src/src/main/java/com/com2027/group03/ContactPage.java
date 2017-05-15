@@ -182,7 +182,6 @@ public class ContactPage extends AppCompatActivity {
         // when the activity gets restored again, call the key and get the value
         name.setText(savedInstanceState.getString("name"));
         fullName.setText(savedInstanceState.getString("fullName"));
-        // need to save the spinner option when it turns as well
         emailAdd.setText(savedInstanceState.getString("emailAdd"));
         email.setText(savedInstanceState.getString("email"));
         messageLabel.setText(savedInstanceState.getString("messageLabel"));
@@ -197,7 +196,6 @@ public class ContactPage extends AppCompatActivity {
         // save all the inputs into a hash using keys and values, converting their input into a string
         savedInstanceState.putString("name", name.getText().toString());
         savedInstanceState.putString("fullName", fullName.getText().toString());
-        // need to save the spinner option when it turns as well
         savedInstanceState.putString("emailAdd", emailAdd.getText().toString());
         savedInstanceState.putString("email", email.getText().toString());
         savedInstanceState.putString("messageLabel", messageLabel.getText().toString());
