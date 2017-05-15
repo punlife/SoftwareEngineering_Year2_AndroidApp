@@ -1,10 +1,15 @@
 package com.com2027.group03;
 
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -28,23 +33,47 @@ import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
 public class LoginActivity extends AppCompatActivity implements View.OnClickListener {
-
+    private static final String TAG = "LoginActivity";
     //  declare field to edit username and password
     private EditText editTextEmail, editTextPassword;
     // declare button to login
     private Button buttonLogin;
     private ProgressDialog progressDialog;
+    private SharedPreferences sharedPreferences;
+
+    private boolean isConnectedToTheInternet() {
+        ConnectivityManager cm =
+                (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo netInfo = cm.getActiveNetworkInfo();
+        return netInfo != null && netInfo.isConnectedOrConnecting();
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_login);
+        sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
 
-        if(SharedPrefManager.getInstance(this).isLoggedIn()){
+        if(sharedPreferences.getBoolean(Constants.IS_LOGGED_IN, false)){
             finish();
-            startActivity(new Intent(this, ProfileActivity.class));
+            startActivity(new Intent(this, MainActivity.class));
             return;
         }
+        // Not connected to the internet and the user did not logged in previously
+        else if(!isConnectedToTheInternet()){
+            Log.e("LoginActivity", "No internet access, logging in as anonymous");
+            SharedPreferences.Editor editor = getPreferences(0).edit();
+            //editor.putBoolean(Constants.IS_LOGGED_IN,true);
+            editor.putString(Constants.EMAIL, "anonymous@anonymous.com");
+            editor.putString(Constants.NICKNAME, "anonymous");
+            editor.putString(Constants.UNIQUE_ID, "anonymous");
+            editor.apply();
+
+            finish();
+            startActivity(new Intent(this, MainActivity.class));
+            return;
+        }
+
+        setContentView(R.layout.activity_login);
 
         // inflate the edit texts
         editTextEmail = (EditText) findViewById(R.id.editTextEmail);
@@ -88,19 +117,31 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                 ServerResponse resp = response.body();
 
                 if(resp.getResult().equals(Constants.SUCCESS)){
-                    SharedPreferences.Editor editor = getPreferences(0).edit();
-                    editor.putBoolean(Constants.IS_LOGGED_IN,true);
-                    editor.putString(Constants.EMAIL,resp.getUser().getEmail());
+
+                    SharedPreferences.Editor editor = sharedPreferences.edit();
+                    editor.putBoolean(Constants.IS_LOGGED_IN, true);
+                    editor.putString(Constants.EMAIL, resp.getUser().getEmail());
                     editor.putString(Constants.NICKNAME, resp.getUser().getNickname());
                     editor.putString(Constants.UNIQUE_ID, resp.getUser().getUnique_id());
                     editor.apply();
 
+                    SharedPreferences viewer = sharedPreferences;
+                    Log.d(TAG, "Is logged in: " + viewer.getBoolean(Constants.IS_LOGGED_IN, false));
+                    Log.d(TAG, "Email: " + viewer.getString(Constants.EMAIL, "null"));
+                    Log.d(TAG, "Nickneme: " + viewer.getString(Constants.NICKNAME, "null"));
+                    Log.d(TAG, "Unique ID: " + viewer.getString(Constants.UNIQUE_ID, "null"));
+                    Log.d(TAG, "Starting menu activity...");
+
+                    finish();
+                    startActivity(new Intent(LoginActivity.this, MainActivity.class));
+                } else {
+                    Log.e(TAG, "Login failed! Error: " + response.body().getMessage());
                 }
             }
 
             @Override
             public void onFailure(Call<ServerResponse> call, Throwable t) {
-
+                Log.e(TAG, "Login failed! Error: " + t.getLocalizedMessage());
             }
         });
 

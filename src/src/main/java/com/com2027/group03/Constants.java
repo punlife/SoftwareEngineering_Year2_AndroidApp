@@ -14,6 +14,7 @@ public class Constants {
     public static final String BASE_URL = "http://82.4.137.151/";
     public static final String REGISTER_OPERATION = "register";
     public static final String LOGIN_OPERATION = "login";
+    public static final String SCORE_OPERATION = "score";
 
     //For future use
     public static final String CHANGE_PASSWORD_OPERATION = "chgPass";

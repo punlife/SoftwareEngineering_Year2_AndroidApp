@@ -1,6 +1,9 @@
 package com.com2027.group03;
 
+import android.content.Context;
 import android.content.Intent;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
@@ -17,16 +20,16 @@ public class ProfileActivity extends AppCompatActivity {
     // declare fields to view the user name and email
     private TextView textViewUsername, textViewUserEmail;
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_profile);
 
         if(!SharedPrefManager.getInstance(this).isLoggedIn()){
             finish();
             startActivity(new Intent(this, LoginActivity.class));
         }
+
+        setContentView(R.layout.activity_profile);
 
         // inflate the text views
         textViewUsername = (TextView) findViewById(R.id.textViewUsername);

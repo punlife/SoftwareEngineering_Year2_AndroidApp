@@ -7,10 +7,14 @@ import android.app.PendingIntent;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.hardware.Sensor;
 import android.hardware.SensorManager;
 import android.media.MediaPlayer;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
@@ -19,17 +23,28 @@ import android.widget.ImageView;
 import android.widget.RadioButton;
 import android.widget.TextView;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.lang.reflect.Array;
+import java.net.ConnectException;
+import java.net.SocketTimeoutException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.TimerTask;
 import java.util.Timer;
 import java.util.Random;
+import java.util.concurrent.TimeoutException;
 import java.util.concurrent.atomic.AtomicBoolean;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Retrofit;
+import retrofit2.converter.gson.GsonConverterFactory;
 
 /**
  * Created by Matus on 12-Mar-17.
@@ -51,6 +66,127 @@ public class CardsActivity extends OpenGLActivity {
     private Sprite scoreTextBackground;
     private Sprite buttonRepeat;
     private Sprite buttonNext;
+
+    public static class BackgroundTask extends Thread {
+        private int score;
+        private String uniqueId;
+        private Context context;
+
+        private boolean isConnectedToTheInternet() {
+            ConnectivityManager cm =
+                    (ConnectivityManager) this.context.getSystemService(Context.CONNECTIVITY_SERVICE);
+            NetworkInfo netInfo = cm.getActiveNetworkInfo();
+            return netInfo != null && netInfo.isConnectedOrConnecting();
+        }
+
+        // Our custom Model class for DatabaseLocal
+        public static class ScoreLocal extends DatabaseLocal.Model {
+            public Integer score = new Integer(0);
+            public String uniqueId = new String();
+
+            public ScoreLocal(){
+
+            }
+        }
+
+        public BackgroundTask(Context context, int score, String uniqueId){
+            this.context = context;
+            this.score = score;
+            this.uniqueId = uniqueId;
+        }
+
+        public void saveToLocal(){
+            // Create instance to model
+            ScoreLocal model = new ScoreLocal();
+            model.score = this.score;
+            model.uniqueId = this.uniqueId;
+            // Create schema based only on one model
+            DatabaseLocal.Schema schema = new DatabaseLocal.Schema(new DatabaseLocal.Model[] {model});
+
+            DatabaseLocal db = new DatabaseLocal(this.context, "database.db", schema);
+
+            try {
+                // Originally, the score was supposed to be per level per difficulty...
+                // The following can be done using shared preferences.
+                // However, we use database in case we will scale-up in the future
+
+                // Check if the row exists (id = 1)
+                ScoreLocal test = db.findById(ScoreLocal.class, 1);
+                if(test == null){
+                    // Does not exist, insert new row
+                    Log.d(TAG, "ScoreLocal does not exist, inserting...");
+                    db.insert(model);
+                } else {
+                    // Does exist, update instead
+                    Log.d(TAG, "ScoreLocal does exist, updating...");
+                    model.id = test.id;
+                    db.update(model);
+                }
+            } catch (IllegalAccessException e){
+                Log.e(TAG, "Error while inserting data into database: " + e.getMessage());
+            }
+            db.close();
+        }
+
+        @Override
+        public void run(){
+            Log.i(TAG, "Running background task...");
+
+            if(isConnectedToTheInternet()){
+                Log.i(TAG, "Remote database available! Saving to remote!");
+
+                Gson gson = new GsonBuilder()
+                        .setLenient()
+                        .create();
+
+
+                // Push data to the server, if success, set done to true
+                Retrofit retrofit = new Retrofit.Builder()
+                        .baseUrl(Constants.BASE_URL)
+                        .addConverterFactory(GsonConverterFactory.create(gson))
+                        .build();
+
+                ScoreInterface requestInterface = retrofit.create(ScoreInterface.class);
+
+                Score data = new Score();
+                ScoreRequest request = new ScoreRequest();
+                data.score = this.score;
+                data.uniqueId = this.uniqueId;
+                data.countryCode = "XX";
+                request.setOperation(Constants.SCORE_OPERATION);
+                request.setScore(data);
+                Call<ScoreResponse> response = requestInterface.operation(request);
+
+                Log.d(TAG, "Saving the following score: " + data.toString());
+                response.enqueue(new Callback<ScoreResponse>() {
+                    @Override
+                    public void onResponse(Call<ScoreResponse> call, retrofit2.Response<ScoreResponse> response) {
+                        if(response.body().getResult().equals(Constants.SUCCESS)){
+                            Log.i(TAG, "Saving to remote success!");
+                        } else {
+                            Log.e(TAG, "Saving to remote failed! Error: " + response.body().getMessage());
+                            saveToLocal();
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(Call<ScoreResponse> call, Throwable t) {
+                        Log.e(TAG, "Saving to remote failed! Error: " + t.getMessage());
+                        Log.e(TAG, "IOException? " + (t instanceof IOException));
+                        Log.e(TAG, "SocketTimeoutException ? " + (t instanceof SocketTimeoutException));
+                        Log.e(TAG, "ConnectException ? " + (t instanceof ConnectException));
+                        Log.e(TAG, "TimeoutException? " + (t instanceof TimeoutException));
+
+
+                        saveToLocal();
+                    }
+                });
+            } else {
+                Log.w(TAG, "Remote database not available! Saving to local!");
+                saveToLocal();
+            }
+        }
+    };
 
     private static class PickedCard {
         public Card card = null;
@@ -78,6 +214,9 @@ public class CardsActivity extends OpenGLActivity {
     private final String[] cardTypes = {"Chair","Sofa", "Rose","Sunflower", "Modern car", "Old car", "Shell", "Fossil", "Crow", "Seagull", "Green tree", "Yellow tree", "Elder leaf", "Chestnut leaf",
             "Strawberry", "Peach", "Plant", "Plant", "Snowy peak", "Mountain", "Notebook", "Book", "Spoon", "Fork", "Pencil", "Pen"};
 
+    private BackgroundTask databaseTask;
+    private SharedPreferences sharedPreferences;
+
     MediaPlayer mp;
     // The padding from the border of the screen
     // In percentages!
@@ -86,6 +225,7 @@ public class CardsActivity extends OpenGLActivity {
 
     @Override
     public void setup(Bundle bundle){
+        sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
 
         this.setBackgroundColor(Color.WHITE);
         // Create a new card renderer with a specific image of cards
@@ -364,6 +504,10 @@ public class CardsActivity extends OpenGLActivity {
                 answerScore = ((answerCounter*10)*answerMultiplier)*difficulty;
 
                 int score = Math.max((difficulty * 10) * (stage * stageCounter * 2) - (seconds / 2) + answerScore, 0);
+
+                // Push score to the server database - by Matus
+                databaseTask = new BackgroundTask(this.getBaseContext(), score, sharedPreferences.getString(Constants.UNIQUE_ID, "anonymous"));
+                databaseTask.start();
 
                 String filename = "highscores";
                 String string = Constants.NICKNAME+","+score+ System.lineSeparator();
