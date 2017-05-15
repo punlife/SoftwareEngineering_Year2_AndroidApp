@@ -22,8 +22,9 @@
 
             <TextView
                 android:id="@+id/help_page_intro"
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:background="@color/mutedRed"
                 android:text="@string/help_screen_title"
                 android:textSize="28dp"
                 android:textAlignment="center"
